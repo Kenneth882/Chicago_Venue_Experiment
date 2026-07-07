@@ -1,0 +1,14 @@
+{
+  "zones": [
+    {"zone_id": "river_north",  "name": "River North",             "tier": 1, "center": {"lat": 41.8924, "lng": -87.6341}, "radius_m": 1000},
+    {"zone_id": "west_loop",    "name": "West Loop / Fulton Market","tier": 1, "center": {"lat": 41.8846, "lng": -87.6480}, "radius_m": 1200},
+    {"zone_id": "loop",         "name": "The Loop",                "tier": 1, "center": {"lat": 41.8786, "lng": -87.6297}, "radius_m": 1000},
+    {"zone_id": "streeterville","name": "Streeterville",           "tier": 2, "center": {"lat": 41.8925, "lng": -87.6196}, "radius_m": 800},
+    {"zone_id": "gold_coast",   "name": "Gold Coast",              "tier": 2, "center": {"lat": 41.9048, "lng": -87.6297}, "radius_m": 800},
+    {"zone_id": "old_town",     "name": "Old Town",                "tier": 2, "center": {"lat": 41.9110, "lng": -87.6376}, "radius_m": 800},
+    {"zone_id": "lincoln_park", "name": "Lincoln Park",            "tier": 2, "center": {"lat": 41.9214, "lng": -87.6513}, "radius_m": 1200},
+    {"zone_id": "wicker_park",  "name": "Wicker Park / Bucktown",  "tier": 2, "center": {"lat": 41.9088, "lng": -87.6773}, "radius_m": 1100},
+    {"zone_id": "logan_square", "name": "Logan Square",            "tier": 3, "center": {"lat": 41.9234, "lng": -87.7078}, "radius_m": 1100},
+    {"zone_id": "south_loop",   "name": "South Loop",              "tier": 3, "center": {"lat": 41.8676, "lng": -87.6270}, "radius_m": 1000}
+  ]
+}

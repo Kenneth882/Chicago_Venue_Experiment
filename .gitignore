@@ -1,0 +1,9 @@
+.env
+tracker.db
+tracker.db-wal
+tracker.db-shm
+cache/
+__pycache__/
+.venv/
+.pytest_cache/
+.claude/settings.local.json

@@ -1,0 +1,1586 @@
+[
+  {
+    "places": [
+      {
+        "id": "ChIJ-6dlubMsDogRavEceBs79j0",
+        "types": [
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "112 W Grand Ave, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8917487,
+          "longitude": -87.6317748
+        },
+        "rating": 4.6,
+        "websiteUri": "http://arbellachicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1294,
+        "displayName": {
+          "text": "Arbella Cocktail Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJafbdjLEsDogRbvlpF3IWJqM",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "51 W Hubbard St Ste 100, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8899298,
+          "longitude": -87.6299476
+        },
+        "rating": 4.9,
+        "websiteUri": "https://gussipanddip.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 3062,
+        "displayName": {
+          "text": "Gus' Sip & Dip",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJiX4KgLEsDogR8gugSnSptzY",
+        "types": [
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "435 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.89031190000001,
+          "longitude": -87.63076679999999
+        },
+        "rating": 4.6,
+        "websiteUri": "http://threedotschicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 8707,
+        "displayName": {
+          "text": "Three Dots and a Dash",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJZdqO8bEsDogRZz7yaALnNH0",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "415 N Dearborn St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8897858,
+          "longitude": -87.62941339999999
+        },
+        "rating": 4.6,
+        "websiteUri": "http://www.ghostdonkeychicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 443,
+        "displayName": {
+          "text": "Ghost Donkey",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJ3YEGma0sDogRkq1rGH3cdeM",
+        "types": [
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "15 E Ohio St, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.892249,
+          "longitude": -87.627499
+        },
+        "rating": 4.4,
+        "websiteUri": "http://www.theberkshireroom.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 494,
+        "displayName": {
+          "text": "The Berkshire Room",
+          "languageCode": "en"
+        },
+        "primaryType": "lounge_bar"
+      },
+      {
+        "id": "ChIJn3m9mK0sDogR3IveoCioFU4",
+        "types": [
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "19 E Ohio St, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.892300299999995,
+          "longitude": -87.6273326
+        },
+        "rating": 4.3,
+        "websiteUri": "https://www.brokenshaker.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 778,
+        "displayName": {
+          "text": "Broken Shaker at Freehand Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJr4wot9YtDogR8agGTf755GU",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "435 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8903369,
+          "longitude": -87.6309053
+        },
+        "rating": 4.7,
+        "websiteUri": "https://www.threedotschicago.com/the-bamboo-room/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 230,
+        "displayName": {
+          "text": "The Bamboo Room at Three Dots and a Dash",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJy-bfKmctDogRgkWuRiriCTw",
+        "types": [
+          "restaurant",
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "712 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8952564,
+          "longitude": -87.63154449999999
+        },
+        "rating": 4.5,
+        "websiteUri": "https://storyvillechicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1947,
+        "displayName": {
+          "text": "Storyville Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJW80a0KgtDogRQnr2pn9IkH4",
+        "types": [
+          "restaurant",
+          "sports_bar",
+          "bar",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "509 N Wells St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8911525,
+          "longitude": -87.63369999999999
+        },
+        "rating": 4.7,
+        "websiteUri": "https://www.dontnvus.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 275,
+        "displayName": {
+          "text": "No Vacancy",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJmdmiCQDTD4gRb3LwMOLn5lM",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "900 N Franklin St, Chicago, IL 60610, USA",
+        "location": {
+          "latitude": 41.8991979,
+          "longitude": -87.6361378
+        },
+        "rating": 4.7,
+        "websiteUri": "https://www.dearlybelovedchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 772,
+        "displayName": {
+          "text": "Dearly Beloved",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJtTIT8tctDogRsk3lReC-wOg",
+        "types": [
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "535 N Wells St Lower Level, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.891888,
+          "longitude": -87.6338054
+        },
+        "rating": 4.3,
+        "websiteUri": "https://www.clandestinosocialclub.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 96,
+        "displayName": {
+          "text": "Clandestino - Cocktail Social Club",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJmX3iRrUsDogRjMUU6zqjDoU",
+        "types": [
+          "restaurant",
+          "sandwich_shop",
+          "historical_landmark",
+          "sports_bar",
+          "pub",
+          "lounge_bar",
+          "night_club",
+          "historical_place",
+          "bar",
+          "american_restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "678 N Orleans St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8946282,
+          "longitude": -87.6374062
+        },
+        "rating": 4.5,
+        "websiteUri": "https://www.greendoorchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1610,
+        "displayName": {
+          "text": "The Green Door Tavern",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJY1wQ3LQsDogR9klvNGYb1Cg",
+        "types": [
+          "cocktail_bar",
+          "steak_house",
+          "bar",
+          "seafood_restaurant",
+          "american_restaurant",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "675 N Franklin St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8944251,
+          "longitude": -87.6354612
+        },
+        "rating": 4.6,
+        "websiteUri": "https://www.franklinroom.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1109,
+        "displayName": {
+          "text": "The Franklin Room",
+          "languageCode": "en"
+        },
+        "primaryType": "american_restaurant"
+      },
+      {
+        "id": "ChIJp88ckJktDogRk2dqpjrLoB0",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "In the alley behind Frontera Grill, 443 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8905039,
+          "longitude": -87.6307899
+        },
+        "rating": 4.5,
+        "websiteUri": "https://barsotano.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 383,
+        "displayName": {
+          "text": "Bar S\u00f3tano",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJQVpH4sotDogRlOpbgJbZBCo",
+        "types": [
+          "indian_restaurant",
+          "cocktail_bar",
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "116 W Hubbard St Ste 1, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8902466,
+          "longitude": -87.63182350000001
+        },
+        "rating": 4.2,
+        "websiteUri": "https://www.bargoachicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 965,
+        "displayName": {
+          "text": "Bar Goa",
+          "languageCode": "en"
+        },
+        "primaryType": "indian_restaurant"
+      },
+      {
+        "id": "ChIJ4yP6IOMtDogRBAIG9nxjKko",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "712 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.895249799999995,
+          "longitude": -87.6316907
+        },
+        "rating": 4.2,
+        "websiteUri": "https://luluschicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 79,
+        "displayName": {
+          "text": "Lulu's Speakeasy",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJR62ag60sDogReIs8QYL5ePo",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "601 N State St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.892672999999995,
+          "longitude": -87.627871
+        },
+        "rating": 4.3,
+        "websiteUri": "http://watershedbar.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 244,
+        "displayName": {
+          "text": "Watershed Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJ52dXVAotDogRzsLPZkxU0mQ",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "51 W Hubbard St Ste 200, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8898897,
+          "longitude": -87.6298989
+        },
+        "rating": 4.9,
+        "websiteUri": "https://kittyscosmopolitanclub.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 395,
+        "displayName": {
+          "text": "Kitty's Cosmopolitan Club",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJkUiIObMsDogR5nsEEAC7xEQ",
+        "types": [
+          "lounge_bar",
+          "cocktail_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "127 W Huron St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8945972,
+          "longitude": -87.6319889
+        },
+        "rating": 4.1,
+        "websiteUri": "https://iogodfrey.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 1499,
+        "displayName": {
+          "text": "IO Godfrey Rooftop Lounge",
+          "languageCode": "en"
+        },
+        "primaryType": "lounge_bar"
+      },
+      {
+        "id": "ChIJxyOjRrUsDogRER62aX-rNJE",
+        "types": [
+          "bar",
+          "historical_landmark",
+          "wine_bar",
+          "pub",
+          "lounge_bar",
+          "performing_arts_theater",
+          "night_club",
+          "live_music_venue",
+          "historical_place",
+          "event_venue",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "676-8 N Orleans St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8945627,
+          "longitude": -87.6374065
+        },
+        "rating": 4.4,
+        "websiteUri": "https://www.thedrifterchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 837,
+        "displayName": {
+          "text": "The Drifter",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      }
+    ],
+    "nextPageToken": "AaVGc3niX4rhHBPkGvKB8F8kozr01gRWwmYbRso1CgTGpGS0gfr9czt8LO_d5nuArUkRQ-KhkNNBpacRc8PrjIP40pNFasST0eRNz5ywa74R0V17xz8casvdRn_7EkkxIn4z4hOqbYN8DFR1Wsogxi_xh66vT5jHg57hAG4o8-fr0YiNPx87XqhpF6E2134r0W_-WfxYR368yUuW9wk5aYthC12UJM7EgpZ_FvIFqrWjFaMbJh59g0BJy-s1DfbtyzyjH3c_quc6Tl8FK-qr1na-VrgEYiBOBQeDGW6pbxXTrWN3Bfhh1nA_XNDJvjJjDRlumkO_jZbkvDIwt4t8YpWkmv2PxCqPhvXzTDZc5wawU36LyBHBnSR1QHjNnNwys2cyRVlHgRmhUDuzSIDwf3m0Ld95X2bVa_Pz1NHKAy9pWa3dSKBGQY7BltpcHaAJGHfUNKe3949NQf7k2JSsqAec9Fej5sXIoZjCiUnMmfo0oLIDsf98Fhtt9FaulyoOIvl6RFvv54Me0ECXxqR4_8_GU6mwHvEDw7MsviFgy0m89UrK1xBwnTL8EHtyG9P4dA2HJAjlpZQfQjXKeTWm4N2qBL5NdHpkySDE_Y3HGV143wxhb3DKgNZPWhX3Ud6fM_M4q6Bd2W_KV6iQq6RNm4gMzATQ3LzaNa9C2Dtw4P_emK2bl9HlcQFsBnrOVW_U7Nt0Gh01l21FSzVDRUqXRsWqWL3B5TSaqtHP1y_T84NdJvHM3LS-e4O5_fqQiWjMAIsEdrK1YQoNhzns49fed6yExCyEWu0h5eh9XmsFqy26r2sUxnIZ4YDKaMsCSX6ATk8xY22jhecp80HH"
+  },
+  {
+    "places": [
+      {
+        "id": "ChIJ5VKNklbTD4gRD19M84CYMcE",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "213 W Institute Pl, Chicago, IL 60610, USA",
+        "location": {
+          "latitude": 41.897319599999996,
+          "longitude": -87.6351354
+        },
+        "rating": 4.4,
+        "websiteUri": "https://www.machinecocktailbar.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1440,
+        "displayName": {
+          "text": "Machine Cocktail Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJj8uXdrMtDogRkVSCwX-Ta60",
+        "types": [
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "505 N State St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.891124399999995,
+          "longitude": -87.6274797
+        },
+        "rating": 4.5,
+        "websiteUri": "https://cbrrestaurant.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 96,
+        "displayName": {
+          "text": "CBR",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJEzAd_dAtDogRIN8ndMsRTTk",
+        "types": [
+          "wine_bar",
+          "cocktail_bar",
+          "coffee_shop",
+          "cafe",
+          "food_store",
+          "store",
+          "bar",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "180 N Wacker Dr, Chicago, IL 60606, USA",
+        "location": {
+          "latitude": 41.885104299999995,
+          "longitude": -87.63719929999999
+        },
+        "rating": 4.4,
+        "websiteUri": "http://www.goodfunkontheriver.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 136,
+        "displayName": {
+          "text": "Good Funk on the River",
+          "languageCode": "en"
+        },
+        "primaryType": "wine_bar"
+      },
+      {
+        "id": "ChIJrXUBGInTD4gRz2B1_f4917s",
+        "types": [
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "11 E Walton St 2nd Floor, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.899746199999996,
+          "longitude": -87.6274657
+        },
+        "rating": 4.6,
+        "websiteUri": "https://bernardschicago.com/?SEO_id=GMB--2-R-CHIWAWA-2&y_source=1_MTU0MDUyMzktNzE1LWxvY2F0aW9uLndlYnNpdGU%3D",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 107,
+        "displayName": {
+          "text": "Bernard\u2019s",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJFzfFcrYsDogREyO0d42z55U",
+        "types": [
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "353 W Hubbard St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8897738,
+          "longitude": -87.6378787
+        },
+        "rating": 4.4,
+        "websiteUri": "https://www.thebassmentchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 915,
+        "displayName": {
+          "text": "The Bassment - Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "lounge_bar"
+      },
+      {
+        "id": "ChIJcWzJBK4sDogRZYF6rJdvmuA",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "412 N State St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.889730400000005,
+          "longitude": -87.6281508
+        },
+        "rating": 4.6,
+        "websiteUri": "https://rossischicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+        "userRatingCount": 1287,
+        "displayName": {
+          "text": "Rossi's",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJf6m9-bEsDogRcgm9nf2Dtho",
+        "types": [
+          "bar",
+          "cocktail_bar",
+          "lounge_bar",
+          "live_music_venue",
+          "night_club",
+          "event_venue",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "26 W Hubbard St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.890257,
+          "longitude": -87.629165
+        },
+        "rating": 4.4,
+        "websiteUri": "https://www.howlatthemoon.com/chicago/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 3811,
+        "displayName": {
+          "text": "Howl at the Moon Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJHQVwOVPTD4gRRHF6Oa0P62M",
+        "types": [
+          "bar",
+          "cocktail_bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "108 E Superior St, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.8959833,
+          "longitude": -87.6250762
+        },
+        "rating": 4.3,
+        "websiteUri": "http://zbarchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 530,
+        "displayName": {
+          "text": "Z Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJgx-juU8tDogRv-IOxRKbcG4",
+        "types": [
+          "soul_food_restaurant",
+          "brunch_restaurant",
+          "catering_service",
+          "cocktail_bar",
+          "fine_dining_restaurant",
+          "food_delivery",
+          "fast_food_restaurant",
+          "live_music_venue",
+          "meal_takeaway",
+          "american_restaurant",
+          "bar",
+          "event_venue",
+          "service",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "339 N Dearborn St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8887528,
+          "longitude": -87.6289128
+        },
+        "rating": 4.7,
+        "websiteUri": "http://kitchenkocktailsusa.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 17728,
+        "displayName": {
+          "text": "Kitchen + Kocktails By Kevin Kelley - Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "soul_food_restaurant"
+      },
+      {
+        "id": "ChIJdWeDEQstDogRrRVXRRWkdAs",
+        "types": [
+          "bar",
+          "brunch_restaurant",
+          "pizza_restaurant",
+          "night_club",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "149 W Kinzie St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8890599,
+          "longitude": -87.6330242
+        },
+        "rating": 4,
+        "websiteUri": "https://www.treehousechicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_INEXPENSIVE",
+        "userRatingCount": 764,
+        "displayName": {
+          "text": "Tree House Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJm_I8DbEsDogRgw0_Rgq8PLE",
+        "types": [
+          "american_restaurant",
+          "lounge_bar",
+          "night_club",
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "111 W Kinzie St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8888206,
+          "longitude": -87.6316528
+        },
+        "rating": 4.5,
+        "websiteUri": "https://untitledsupperclub.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 3040,
+        "displayName": {
+          "text": "Untitled Supper Club",
+          "languageCode": "en"
+        },
+        "primaryType": "american_restaurant"
+      },
+      {
+        "id": "ChIJ0ZI92SwtDogRTzlRtsJTI70",
+        "types": [
+          "sports_bar",
+          "brunch_restaurant",
+          "american_restaurant",
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "112 W Hubbard St 1st floor, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8902353,
+          "longitude": -87.6317849
+        },
+        "rating": 4.4,
+        "websiteUri": "https://parlayrivernorth.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 714,
+        "displayName": {
+          "text": "Parlay River North",
+          "languageCode": "en"
+        },
+        "primaryType": "sports_bar"
+      },
+      {
+        "id": "ChIJk3rGOawsDogRn0NQTFp9m7w",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "521 N Rush St 5th Floor, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.891259,
+          "longitude": -87.62534319999999
+        },
+        "rating": 4,
+        "websiteUri": "http://www.thegwenchicago.com/dining/upstairs-at-the-gwen/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 409,
+        "displayName": {
+          "text": "Upstairs at The Gwen",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJV_s6ILEsDogRR_5H7mQn4nw",
+        "types": [
+          "american_restaurant",
+          "brunch_restaurant",
+          "cocktail_bar",
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "315 N LaSalle St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8879525,
+          "longitude": -87.6322647
+        },
+        "rating": 4.6,
+        "websiteUri": "https://www.riverroastchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 5688,
+        "displayName": {
+          "text": "River Roast",
+          "languageCode": "en"
+        },
+        "primaryType": "american_restaurant"
+      },
+      {
+        "id": "ChIJS0kqaTItDogRXIgU7nCVHKQ",
+        "types": [
+          "mediterranean_restaurant",
+          "wine_bar",
+          "cocktail_bar",
+          "bar",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "180 N Wacker Dr, Chicago, IL 60606, USA",
+        "location": {
+          "latitude": 41.8851748,
+          "longitude": -87.6371784
+        },
+        "rating": 4.1,
+        "websiteUri": "http://beatnikontheriver.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 3134,
+        "displayName": {
+          "text": "Beatnik On The River",
+          "languageCode": "en"
+        },
+        "primaryType": "mediterranean_restaurant"
+      },
+      {
+        "id": "ChIJXx374a8sDogR2ZjAxYv_Qn8",
+        "types": [
+          "bar",
+          "american_restaurant",
+          "restaurant",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "1 W Wacker Dr, Chicago, IL 60601, USA",
+        "location": {
+          "latitude": 41.8862369,
+          "longitude": -87.6283636
+        },
+        "rating": 4.2,
+        "websiteUri": "https://www.raisedbarchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1566,
+        "displayName": {
+          "text": "RAISED | An Urban Rooftop Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJRUaRg60sDogRrA_dnDjeqA4",
+        "types": [
+          "wine_bar",
+          "bar",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "601 N State St, Chicago, IL 60610, USA",
+        "location": {
+          "latitude": 41.8926251,
+          "longitude": -87.62794520000001
+        },
+        "rating": 4.4,
+        "websiteUri": "http://popsforchampagne.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 607,
+        "displayName": {
+          "text": "Pops for Champagne",
+          "languageCode": "en"
+        },
+        "primaryType": "wine_bar"
+      },
+      {
+        "id": "ChIJ182ima0sDogRc91kHfz-YkQ",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "15 E Ohio St, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.8922245,
+          "longitude": -87.6274878
+        },
+        "rating": 4.2,
+        "websiteUri": "https://www.theberkshireroom.com/bodega",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 72,
+        "displayName": {
+          "text": "Bodega Bar at The Berkshire Room",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJAQBAtrEsDogR8flim92dsPk",
+        "types": [
+          "restaurant",
+          "bar",
+          "food",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "320 N Dearborn St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8881656,
+          "longitude": -87.6298588
+        },
+        "rating": 3.9,
+        "websiteUri": "https://www.320riverbar.com/?scid=feed67b0-9a2f-4de1-8df6-114544116108",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 91,
+        "displayName": {
+          "text": "320 RiverBar",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJ182ima0sDogRrATVhaoyAgQ",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "15 E Ohio St, Chicago, IL 60601, USA",
+        "location": {
+          "latitude": 41.8922397,
+          "longitude": -87.62750059999999
+        },
+        "rating": 4,
+        "websiteUri": "https://bunnyslopechicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 15,
+        "displayName": {
+          "text": "Bunny Slope",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      }
+    ],
+    "nextPageToken": "AaVGc3mSgoW6Y1SH8MupZ6steL89U_LaJz5n5t9UiP6y-FwLdSEU57JOgTquTdkEJTSMVteuHR3pM3S_UfiFL-SutI8Go_n94WISz9gnqzBNE_h89YakG8oYBJMczrgDmo3e3H6qfO2DWWYbzWEVr-IvwvPKCNIdJvtcN0gPNp0Id678tryUR7cCqXeMYXNIsZ9fyWxpDkHSKPkOgjsQAqhl7dw-7LZRx7iwLEJCPSrRJtrW1SiTEalP18rHcvpfAsu7BNX0ItKKtlYVnHmdAwX9R4FaOEoIhx9hWUOKz--Mff9LrMKixi_RYrTpXhKF7qCqVSfX0sXW0HEH0oD-j4mE6LVPGAsKGZ6V2p-YBCM3tdDCjI5HUlKxtl4pSBZXlKXWXqwou2Fkvqv-SJK_eOYMCHqSVMvGjm-9F63HAUK3efltSSiO6MbCtKQGekYTxhcRDQKF1ILboZIi9kCkASgf1fNEBJOcbPI4QsNLsDRP2ne1hHYy6NlNIqXkmdnsfrw9iFMOUSwCG7IyJh1-w16KcgeP-65oUyLvHJ1QPwQtg9P8eCasqttbKRNo3nLUzqiQDEmjS2yQKAQrWyqyvQ-ZDLBew-F21CNKTkNO4VizhegL2rG_aa1VLro05dasDvtD3YjCj8Obiclwcyq4XTPNzzmP0lUszAkOPaaYH4xW8M4PyEL1UGgJJJJWb9LcKscPvECH06ROlGdsfhqvQEwynuIOGp3cO4XAxTTqe9YMZHV9vHXdZ33oS73MJa2C8sUckuJRI2-e7WCwmiTmIxm5eVATK0iV-YLBZGjv2sp5JSWRVMWjw175N0V0npE61mkFaevWlFveQOQWB1jA0QKNTqjjnt4h4dvAII9vSrXY5RibQUF9mIu0gXNJ8gX_Mu59yif3zcbHpzzn6hK_B6hioAaK78SNmFjMtH3BzMlosNhJTHDhhBny7tBoNpurj6JhlWh7xAcaFBUN0iW1pXcp7I4Y0jsAghGwrZ9lR9aMyKXHOtK8PXtEka1kLAXxR7ZAVYo7n6gI5Ru5K8bfB9u6AiGpLV8LjTFRNtj9_MiKR8CGYrRQ0Jw62bK3qLRPm637hQSsr4GnBugMVokQb4EdlwERvYBtznopfxhxEzb1UEhFaDHJorSVZZm8Tr4L7PLeZTKeiY9cXh8Cvj-LnNzwACY1oSFz08o6JgNsAxtw8jbbAKVYZy0FWsEB8KoE92fh-1sWUS1cOgF0tlzVDAmGE1CXEE9sxUlEiWUGBwiJn6bJZ5WT9zorOaEAy-G44Ewb2ohIJCP8n5KiqiADtH5FSyKg5q1zdADN2qIcfjIlR0PQrRIft0HmHxZs_HOkpC2wiNgwxkV9O1pX9GHpj0tFJCKFIH6P3BTV-gXXDcvtxhdN7zpCmSV3Aosno-O-3-SiZha85Y36PU4PcCvlcHokVVkcbBmQsu0giTOUkQNwZzfvTk1PZbQ5sS1mR6_dvy2xBGej9a5VxFuG_8S6yJkYKfd4MUkI5Q6rtu-t_MSW3ohcptD2QeamqfzlNhenji6QRFwPf3OQZKCZDucZnnIK14JUpnGoGluoJCxefER37fjpJqNU4hXYtKjOshJjXR0INNx9KORMjNWGBs5gpg"
+  },
+  {
+    "places": [
+      {
+        "id": "ChIJFdNS8oYtDogRca_RrBArRZA",
+        "types": [
+          "bar",
+          "cocktail_bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "81 E Wacker Pl, Chicago, IL 60601, USA",
+        "location": {
+          "latitude": 41.8867378,
+          "longitude": -87.6250203
+        },
+        "rating": 4.6,
+        "websiteUri": "https://www.pendry.com/chicago/dining/bar-pendry/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 133,
+        "displayName": {
+          "text": "Bar Pendry Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJx8TdwnItDogRHuUtOk6e-1Y",
+        "types": [
+          "mediterranean_restaurant",
+          "wine_bar",
+          "cocktail_bar",
+          "bar",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "640 N La Salle Dr 8th floor, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8936332,
+          "longitude": -87.63289999999999
+        },
+        "rating": 4.2,
+        "websiteUri": "https://www.avecrestaurant.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 228,
+        "displayName": {
+          "text": "bar avec",
+          "languageCode": "en"
+        },
+        "primaryType": "mediterranean_restaurant"
+      },
+      {
+        "id": "ChIJM7AX2DXTD4gRH2G2hdBDGlk",
+        "types": [
+          "american_restaurant",
+          "dessert_shop",
+          "confectionery",
+          "bar",
+          "food_store",
+          "store",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "23 W Hubbard St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.889935,
+          "longitude": -87.6289846
+        },
+        "rating": 4.3,
+        "websiteUri": "https://www.jojosshakebar.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 4932,
+        "displayName": {
+          "text": "JoJo's Shake Bar - Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "american_restaurant"
+      },
+      {
+        "id": "ChIJL1FaQTctDogRMjFKgUYAVZo",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "710 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8951992,
+          "longitude": -87.63154420000001
+        },
+        "rating": 4.7,
+        "websiteUri": "https://stardustchi.com/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 128,
+        "displayName": {
+          "text": "Stardust",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJDwYuZbEsDogRyk4CxG12inc",
+        "types": [
+          "night_club",
+          "cocktail_bar",
+          "bar",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "111 W Hubbard St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8899009,
+          "longitude": -87.6315779
+        },
+        "rating": 3.9,
+        "websiteUri": "https://celestedisco.com/deco-supper-club/#menus",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 1492,
+        "displayName": {
+          "text": "Celeste",
+          "languageCode": "en"
+        },
+        "primaryType": "night_club"
+      },
+      {
+        "id": "ChIJM5IN8rIsDogRCKW5W5TRy9E",
+        "types": [
+          "restaurant",
+          "asian_restaurant",
+          "thai_restaurant",
+          "sushi_restaurant",
+          "lounge_bar",
+          "night_club",
+          "chinese_restaurant",
+          "bar",
+          "japanese_restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "632 N Dearborn St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8934147,
+          "longitude": -87.6300087
+        },
+        "rating": 4.2,
+        "websiteUri": "https://taogroup.com/venues/tao-asian-bistro-chicago/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 3856,
+        "displayName": {
+          "text": "TAO Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJuxzb0bEsDogRY0_Z--o0pLU",
+        "types": [
+          "lounge_bar",
+          "cocktail_bar",
+          "live_music_venue",
+          "fine_dining_restaurant",
+          "wedding_venue",
+          "night_club",
+          "bar",
+          "event_venue",
+          "service",
+          "american_restaurant",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "329 N Dearborn St, Chicago, IL 60655, USA",
+        "location": {
+          "latitude": 41.8882037,
+          "longitude": -87.6292039
+        },
+        "rating": 4.6,
+        "websiteUri": "https://locations.houseofblues.com/foundation-room/il/chicago/329-n-dearborn-st.?y_source=1_MTU2MzYxNDgtNzE1LWxvY2F0aW9uLndlYnNpdGU%3D",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 215,
+        "displayName": {
+          "text": "Foundation Room Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "lounge_bar"
+      },
+      {
+        "id": "ChIJP94bDQAtDogRitfx0zpJfzQ",
+        "types": [
+          "restaurant",
+          "cocktail_bar",
+          "brunch_restaurant",
+          "bar",
+          "event_venue",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "488 N La Salle Dr, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8907065,
+          "longitude": -87.6328656
+        },
+        "rating": 4.9,
+        "websiteUri": "http://electricshuffle.com/us/chicago",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 318,
+        "displayName": {
+          "text": "Electric Shuffle Chicago",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJWW6djbEsDogRbPvGtgd84Eg",
+        "types": [
+          "restaurant",
+          "bar",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "410 N Dearborn St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.889647499999995,
+          "longitude": -87.6298595
+        },
+        "rating": 4.4,
+        "websiteUri": "https://www.marriott.com/en-us/hotels/chinr-springhill-suites-chicago-downtown-river-north/dining/?utm_source=google&utm_medium=organic&utm_campaign=business_listing",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 41,
+        "displayName": {
+          "text": "Holloways Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJYTTn_a4sDogRVVaRtalmGH4",
+        "types": [
+          "restaurant",
+          "bar",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "85 E Wacker Dr 22nd Floor, Chicago, IL 60601, USA",
+        "location": {
+          "latitude": 41.8877738,
+          "longitude": -87.6253083
+        },
+        "rating": 4.2,
+        "websiteUri": "https://londonhousechicago.com/rooftop/?SEO_id=GMB--R-CHILHQQ&y_source=1_MjY1ODkzNDItNzE1LWxvY2F0aW9uLndlYnNpdGU%3D",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_EXPENSIVE",
+        "userRatingCount": 3715,
+        "displayName": {
+          "text": "LH Rooftop",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJFRrHYrEsDogRYp5NBLUv1_w",
+        "types": [
+          "restaurant",
+          "cocktail_bar",
+          "brunch_restaurant",
+          "bar",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "110 W Hubbard St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8901573,
+          "longitude": -87.6316291
+        },
+        "rating": 4.1,
+        "websiteUri": "https://www.hubbardinn.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1631,
+        "displayName": {
+          "text": "Hubbard Inn",
+          "languageCode": "en"
+        },
+        "primaryType": "restaurant"
+      },
+      {
+        "id": "ChIJZZ-5q40tDogR40QYi2bjdEE",
+        "types": [
+          "italian_restaurant",
+          "cocktail_bar",
+          "bar",
+          "event_venue",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "101 E Erie St, Chicago, IL 60611, USA",
+        "location": {
+          "latitude": 41.893893999999996,
+          "longitude": -87.6251557
+        },
+        "rating": 4.5,
+        "websiteUri": "http://www.labellachicago.com/locations/river-north",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 346,
+        "displayName": {
+          "text": "La Bella Trattoria on Rush",
+          "languageCode": "en"
+        },
+        "primaryType": "italian_restaurant"
+      },
+      {
+        "id": "ChIJLSZRPOjTD4gRkjOKm4nPUWA",
+        "types": [
+          "cocktail_bar",
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "912 N State St, Chicago, IL 60610, USA",
+        "location": {
+          "latitude": 41.8996995,
+          "longitude": -87.62853129999999
+        },
+        "rating": 4.4,
+        "websiteUri": "https://www.adalinachicago.com/rose-lounge/",
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 32,
+        "displayName": {
+          "text": "Rose Lounge",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJGYucZbEsDogRV32lT2JMlKg",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "113 W Hubbard St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8898752,
+          "longitude": -87.63180559999999
+        },
+        "rating": 3.8,
+        "websiteUri": "http://pointandfeatherchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 447,
+        "displayName": {
+          "text": "Point & Feather",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJdw4JNLEsDogRXVWudy_sKZc",
+        "types": [
+          "cocktail_bar",
+          "lounge_bar",
+          "night_club",
+          "mexican_restaurant",
+          "bar",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "155 W Kinzie St #4514, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.888847999999996,
+          "longitude": -87.6331924
+        },
+        "rating": 3.2,
+        "websiteUri": "https://www.moescantina.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 26,
+        "displayName": {
+          "text": "Cava Room",
+          "languageCode": "en"
+        },
+        "primaryType": "cocktail_bar"
+      },
+      {
+        "id": "ChIJ3waAcrEsDogRpVNpOKMTLz8",
+        "types": [
+          "mexican_restaurant",
+          "wine_bar",
+          "tapas_restaurant",
+          "catering_service",
+          "vegan_restaurant",
+          "food_delivery",
+          "vegetarian_restaurant",
+          "meal_takeaway",
+          "bar",
+          "service",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "108 W Kinzie St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.889377499999995,
+          "longitude": -87.6315984
+        },
+        "rating": 4.6,
+        "websiteUri": "https://www.mercaditorivernorth.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 5920,
+        "displayName": {
+          "text": "Mercadito",
+          "languageCode": "en"
+        },
+        "primaryType": "mexican_restaurant"
+      },
+      {
+        "id": "ChIJ7f9yjLMsDogRmkW1JsmsFFg",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "530 N La Salle Dr, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.8918405,
+          "longitude": -87.6331075
+        },
+        "rating": 4.6,
+        "businessStatus": "OPERATIONAL",
+        "userRatingCount": 87,
+        "displayName": {
+          "text": "Bar Moxy",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJfds8EEvTD4gR4NHirhe7O3c",
+        "types": [
+          "bar",
+          "cocktail_bar",
+          "video_arcade",
+          "bar_and_grill",
+          "event_venue",
+          "american_restaurant",
+          "restaurant",
+          "point_of_interest",
+          "food",
+          "establishment"
+        ],
+        "formattedAddress": "213 W Institute Pl, Chicago, IL 60610, USA",
+        "location": {
+          "latitude": 41.897319599999996,
+          "longitude": -87.6351354
+        },
+        "rating": 4.5,
+        "websiteUri": "https://www.hqrivernorth.com/?utm_source=GBP&utm_medium=organic",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 4069,
+        "displayName": {
+          "text": "Headquarters Beercade",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJl4qjZM8sDogR2QZVDh9Cgfo",
+        "types": [
+          "bar",
+          "cocktail_bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "660 W Lake St, Chicago, IL 60661, USA",
+        "location": {
+          "latitude": 41.8858416,
+          "longitude": -87.64517029999999
+        },
+        "rating": 4.4,
+        "websiteUri": "http://www.moneygunchicago.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1105,
+        "displayName": {
+          "text": "MONEYGUN",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      },
+      {
+        "id": "ChIJ4bSte7EsDogR4t3a6GtFy4Q",
+        "types": [
+          "bar",
+          "point_of_interest",
+          "establishment"
+        ],
+        "formattedAddress": "420 N Clark St, Chicago, IL 60654, USA",
+        "location": {
+          "latitude": 41.889896199999995,
+          "longitude": -87.6312834
+        },
+        "rating": 3.8,
+        "websiteUri": "http://www.thebossbar.com/",
+        "businessStatus": "OPERATIONAL",
+        "priceLevel": "PRICE_LEVEL_MODERATE",
+        "userRatingCount": 1440,
+        "displayName": {
+          "text": "The Boss Bar",
+          "languageCode": "en"
+        },
+        "primaryType": "bar"
+      }
+    ]
+  }
+]

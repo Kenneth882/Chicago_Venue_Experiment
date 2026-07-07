@@ -1,0 +1,9 @@
+httpx
+anthropic
+shapely
+pdf2image
+Pillow
+beautifulsoup4
+tenacity
+python-dotenv
+pytest

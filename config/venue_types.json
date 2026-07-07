@@ -1,0 +1,14 @@
+{
+  "venue_types": [
+    {"type_id": "cocktail_bar",    "included_type": "bar",
+     "queries": ["cocktail bar {zone} Chicago", "craft cocktails {zone}", "cocktail lounge private events {zone}"]},
+    {"type_id": "private_dining",  "included_type": "restaurant",
+     "queries": ["restaurant private dining {zone} Chicago", "private dining room {zone}", "group dining events {zone} Chicago"]},
+    {"type_id": "event_venue",     "included_type": null,
+     "queries": ["private event venue {zone} Chicago", "event space {zone} Chicago"]},
+    {"type_id": "brewery",         "included_type": "bar",
+     "queries": ["brewery taproom {zone} Chicago", "brewery private events {zone}"]},
+    {"type_id": "rooftop",         "included_type": "bar",
+     "queries": ["rooftop bar {zone} Chicago", "rooftop private events {zone} Chicago"]}
+  ]
+}
