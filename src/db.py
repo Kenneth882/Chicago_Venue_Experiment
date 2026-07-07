@@ -145,6 +145,56 @@ def complete_cell(conn: sqlite3.Connection, cell_id: str, status: str) -> None:
         )
 
 
+def mark_cell_running(conn: sqlite3.Connection, cell_id: str, run_id: str) -> None:
+    """Stamp a specific cell as running under this run_id (explicit CLI selection,
+    as opposed to claim_pending_cell's claim-any semantics)."""
+    with conn:
+        conn.execute(
+            "UPDATE cells SET status = 'running', run_id = ?, updated_at = ? WHERE cell_id = ?",
+            (run_id, _utc_now(), cell_id),
+        )
+
+
+def get_venue(conn: sqlite3.Connection, place_id: str) -> Optional[sqlite3.Row]:
+    return conn.execute(
+        "SELECT * FROM venues WHERE place_id = ?", (place_id,)
+    ).fetchone()
+
+
+def promote_stage(
+    conn: sqlite3.Connection, place_id: str, to_stage: str, from_stage: str
+) -> bool:
+    """Set stage only if the row is currently at from_stage. Returns True if
+    promoted. This is how Stage 1 marks survivors 1_geo_ok without
+    resurrecting eliminated/filtered rows on re-runs."""
+    with conn:
+        cur = conn.execute(
+            "UPDATE venues SET stage = ?, updated_at = ? WHERE place_id = ? AND stage = ?",
+            (to_stage, _utc_now(), place_id, from_stage),
+        )
+    return cur.rowcount > 0
+
+
+def venues_at_stage(
+    conn: sqlite3.Connection, stage: str, limit: Optional[int] = None
+) -> list[sqlite3.Row]:
+    sql = "SELECT * FROM venues WHERE stage = ? ORDER BY place_id"
+    if limit is not None:
+        return conn.execute(sql + " LIMIT ?", (stage, limit)).fetchall()
+    return conn.execute(sql, (stage,)).fetchall()
+
+
+def venues_flagged(
+    conn: sqlite3.Connection, stage: str, reason: str
+) -> list[sqlite3.Row]:
+    """Rows at a stage carrying a specific marker in eliminated_reason
+    (e.g. needs_review + website_dead_once = the website retry queue)."""
+    return conn.execute(
+        "SELECT * FROM venues WHERE stage = ? AND eliminated_reason = ? ORDER BY place_id",
+        (stage, reason),
+    ).fetchall()
+
+
 def upsert_venue(conn: sqlite3.Connection, record: dict[str, Any]) -> str:
     """Insert or update a venue keyed on place_id. Returns "new" or "dupe".
 

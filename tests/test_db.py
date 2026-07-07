@@ -236,6 +236,44 @@ def test_set_stage_missing_venue_raises(conn):
         db.set_stage(conn, "nope", "1_geo_ok")
 
 
+# --- promote_stage / venues_at_stage / get_venue ---
+
+def test_promote_stage_only_from_matching_stage(conn):
+    db.upsert_venue(conn, make_record())
+    assert db.promote_stage(conn, "ChIJtest123", "1_geo_ok", from_stage="0_raw") is True
+    assert get_venue(conn)["stage"] == "1_geo_ok"
+    # a second promote from 0_raw is a no-op
+    assert db.promote_stage(conn, "ChIJtest123", "1_geo_ok", from_stage="0_raw") is False
+    # an eliminated row cannot be resurrected by promote
+    db.set_stage(conn, "ChIJtest123", "eliminated", reason="rating_below_4")
+    assert db.promote_stage(conn, "ChIJtest123", "1_geo_ok", from_stage="0_raw") is False
+    assert get_venue(conn)["stage"] == "eliminated"
+
+
+def test_venues_at_stage_filters_and_limits(conn):
+    for i in range(3):
+        db.upsert_venue(conn, make_record(place_id=f"ChIJ{i}"))
+    db.set_stage(conn, "ChIJ0", "1_geo_ok")
+    db.set_stage(conn, "ChIJ1", "1_geo_ok")
+    assert len(db.venues_at_stage(conn, "1_geo_ok")) == 2
+    assert len(db.venues_at_stage(conn, "1_geo_ok", limit=1)) == 1
+    assert len(db.venues_at_stage(conn, "2_filtered_ok")) == 0
+
+
+def test_get_venue(conn):
+    assert db.get_venue(conn, "missing") is None
+    db.upsert_venue(conn, make_record())
+    assert db.get_venue(conn, "ChIJtest123")["name"] == "The Violet Hour"
+
+
+def test_mark_cell_running(conn):
+    db.seed_cells(conn, ZONES, VENUE_TYPES)
+    db.mark_cell_running(conn, "loop__brewery", "r9")
+    row = conn.execute("SELECT * FROM cells WHERE cell_id = 'loop__brewery'").fetchone()
+    assert row["status"] == "running"
+    assert row["run_id"] == "r9"
+
+
 # --- write_stats ---
 
 def test_write_stats(conn):

@@ -196,8 +196,18 @@ Checks in this exact order, stopping at first failure; each failure sets
 2. `rating >= 4.0 AND user_rating_count >= 50` → else `rating_below_4` / `too_few_reviews`
 3. `price_level is null OR price_level <= 3` → else `price_level_high`
 4. `website_uri` present → else `no_website`
-5. HTTP check (httpx, follow redirects, 10s timeout, via cached fetch layer in
-   `src/fetch.py`): status 200 → else `website_dead`
+5. HTTP check (httpx, follow redirects, 10s timeout, browser-like header set,
+   one retry after 3s on 403/429/timeout, via cached fetch layer in
+   `src/fetch.py`): status 200 → pass on to check 6. Otherwise two-strike:
+   the first failing run sets `stage='needs_review'` with marker
+   `website_dead_once` (re-checked automatically on the next run); a second
+   consecutive failing run sets `eliminated` / `website_dead`. Bot-challenge
+   responses (403/429) are never written to the fetch cache.
+   (Amended 2026-07-07: 12 false `website_dead` kills — restaurant hosting
+   platforms (Popmenu, Owner.com) behind Cloudflare 403 the Python TLS stack
+   regardless of headers; curl with identical headers gets 200. A real-browser
+   fetch for these lands with Playwright in M4; until then blocked sites park
+   in needs_review instead of dying.)
 6. Identity match: compare venue name against final redirect domain, `<title>`, and
    `og:site_name` using a normalized token-overlap score.
    Score ≥ 0.6 → pass. Score ≤ 0.2 → `website_identity_mismatch`.
