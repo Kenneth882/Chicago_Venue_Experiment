@@ -1,0 +1,40 @@
+{
+  "venue": {
+    "place_id": "golden_low_confidence",
+    "name": "Fig & Whistle",
+    "formatted_address": "50 E Fake Pl, Chicago, IL 60611",
+    "website_uri": "https://figandwhistle.test/"
+  },
+  "web": {
+    "https://figandwhistle.test/": {
+      "status": 200,
+      "text": "<html><head><title>Fig &amp; Whistle</title></head><body><nav><a href=\"/menu\">Menu</a></nav><p>Streeterville pub.</p></body></html>"
+    },
+    "https://figandwhistle.test/menu": {
+      "status": 200,
+      "text": "<html><body><p>MENU COMING SOON — we are refreshing our offerings for the season. Check back shortly!</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": null, "cocktail_price_max": null,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": null, "stated_capacity": null,
+    "event_contact_email": null,
+    "contact_method": "none",
+    "event_keywords_found": [],
+    "confidence": "low",
+    "evidence": "The menu page is a placeholder with no prices or event information."
+  },
+  "expected": {
+    "stage": "needs_review",
+    "eliminated_reason": "extraction_low_confidence",
+    "flags": ["extraction_low_confidence"],
+    "price_signal": null,
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["MENU COMING SOON"]
+  }
+}

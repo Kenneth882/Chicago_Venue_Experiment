@@ -288,6 +288,19 @@ def set_stage(
             raise KeyError(f"no venue with place_id {place_id!r}")
 
 
+def write_extraction(
+    conn: sqlite3.Connection, place_id: str, extraction: dict[str, Any]
+) -> None:
+    """Store the Stage 3 extraction envelope (JSON) on a venue."""
+    with conn:
+        cur = conn.execute(
+            "UPDATE venues SET extraction_json = ?, updated_at = ? WHERE place_id = ?",
+            (json.dumps(extraction), _utc_now(), place_id),
+        )
+        if cur.rowcount == 0:
+            raise KeyError(f"no venue with place_id {place_id!r}")
+
+
 def write_stats(conn: sqlite3.Connection, row: dict[str, Any]) -> None:
     """Append one per-cell run_stats row."""
     with conn:

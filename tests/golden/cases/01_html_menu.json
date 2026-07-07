@@ -1,0 +1,45 @@
+{
+  "venue": {
+    "place_id": "golden_html_menu",
+    "name": "The Golden Tap",
+    "formatted_address": "440 N Fake St, Chicago, IL 60654",
+    "website_uri": "https://goldentap.test/"
+  },
+  "web": {
+    "https://goldentap.test/": {
+      "status": 200,
+      "text": "<html><head><title>The Golden Tap</title></head><body><nav><a href=\"/menu\">Menu</a><a href=\"/private-events\">Private Events</a><a href=\"/about\">About Us</a></nav><p>Neighborhood cocktail bar in River North, Chicago.</p></body></html>"
+    },
+    "https://goldentap.test/menu": {
+      "status": 200,
+      "text": "<html><body><h1>Cocktails</h1><p>Old Fashioned $14</p><p>Paper Plane $16</p><p>Golden Hour Martini $19</p><h2>Snacks</h2><p>Duck Fat Fries $9</p></body></html>"
+    },
+    "https://goldentap.test/private-events": {
+      "status": 200,
+      "text": "<html><body><h1>Private Events</h1><p>Host your next party at The Golden Tap. Semi-private lounge and full buyouts available for groups up to 80 guests.</p><p>Food &amp; beverage minimum $3,000 on weekends.</p><p>Email events@goldentap.test to book.</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 14, "cocktail_price_max": 19,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": 3000, "buyout_price_usd": null,
+    "semi_private_available": true, "stated_capacity": 80,
+    "event_contact_email": "events@goldentap.test",
+    "contact_method": "email",
+    "event_keywords_found": ["private events", "semi-private", "buyouts"],
+    "confidence": "high",
+    "evidence": "Cocktail prices $14-$19 from /menu; $3,000 minimum, semi-private lounge and 80-guest capacity from /private-events."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "mid",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["$14", "Golden Hour Martini $19", "Semi-private lounge", "$3,000"],
+    "sources_include": ["https://goldentap.test/menu", "https://goldentap.test/private-events"]
+  }
+}

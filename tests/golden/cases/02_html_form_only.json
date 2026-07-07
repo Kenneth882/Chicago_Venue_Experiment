@@ -1,0 +1,45 @@
+{
+  "venue": {
+    "place_id": "golden_form_only",
+    "name": "Bar Meridian",
+    "formatted_address": "1200 W Fake Ave, Chicago, IL 60622",
+    "website_uri": "https://barmeridian.test/"
+  },
+  "web": {
+    "https://barmeridian.test/": {
+      "status": 200,
+      "text": "<html><head><title>Bar Meridian</title></head><body><nav><a href=\"/drinks\">Drinks</a><a href=\"/events\">Events</a></nav><p>Wicker Park cocktails.</p></body></html>"
+    },
+    "https://barmeridian.test/drinks": {
+      "status": 200,
+      "text": "<html><body><h1>Drinks</h1><p>Daiquiri $13</p><p>Negroni $15</p><p>Mezcal Old Pal $17</p></body></html>"
+    },
+    "https://barmeridian.test/events": {
+      "status": 200,
+      "text": "<html><body><h1>Group Events</h1><p>We love parties. Fill out our inquiry form and our team will reach out.</p><form action=\"/inquiry\"></form></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 13, "cocktail_price_max": 17,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": null, "stated_capacity": null,
+    "event_contact_email": null,
+    "contact_method": "form_only",
+    "event_keywords_found": ["group events"],
+    "confidence": "medium",
+    "evidence": "Cocktail prices $13-$17 from /drinks; events page offers only an inquiry form, no numbers stated."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "mid",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["Daiquiri $13", "inquiry form"],
+    "sources_include": ["https://barmeridian.test/drinks"]
+  }
+}

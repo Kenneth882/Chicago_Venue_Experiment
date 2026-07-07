@@ -1,0 +1,23 @@
+{
+  "venue": {
+    "place_id": "golden_no_menu",
+    "name": "The Quiet Room",
+    "formatted_address": "5 S Fake Ct, Chicago, IL 60603",
+    "website_uri": "https://quietroom.test/"
+  },
+  "web": {
+    "https://quietroom.test/": {
+      "status": 200,
+      "text": "<html><head><title>The Quiet Room</title></head><body><h1>The Quiet Room</h1><p>A bar. Open Tuesday through Saturday, 5pm until late. 5 S Fake Ct, Chicago. No reservations, no phone, no socials. You either know or you don't. This paragraph exists to make the homepage long enough that it does not look like an empty JavaScript shell to automated systems, which would be embarrassing for everyone involved.</p></body></html>"
+    }
+  },
+  "llm_response": null,
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": null,
+    "menu_unavailable": true,
+    "llm_called": false
+  }
+}

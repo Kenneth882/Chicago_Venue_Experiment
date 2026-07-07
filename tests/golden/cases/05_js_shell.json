@@ -1,0 +1,47 @@
+{
+  "venue": {
+    "place_id": "golden_js_shell",
+    "name": "Static Supper Club",
+    "formatted_address": "800 W Fake St, Chicago, IL 60642",
+    "website_uri": "https://staticsupper.test/"
+  },
+  "web": {
+    "https://staticsupper.test/": {
+      "status": 200,
+      "text": "<html><head><title>Static Supper Club</title></head><body><div id=\"root\"></div><script src=\"/static/app.js\"></script></body></html>"
+    },
+    "https://staticsupper.test/menus": {
+      "status": 200,
+      "text": "<html><body><h1>Dinner</h1><p>Ribeye $54</p><p>Half Chicken $32</p><h1>Cocktails</h1><p>Martini Service $18</p><p>Gimlet $15</p><p>Private dining room seats 40. Email host@staticsupper.test.</p></body></html>"
+    }
+  },
+  "rendered": {
+    "https://staticsupper.test/": {
+      "status": 200,
+      "text": "<html><head><title>Static Supper Club</title></head><body><nav><a href=\"/menus\">Menus</a><a href=\"/gallery\">Gallery</a></nav><h1>Static Supper Club</h1><p>A West Town supper club. Private dining available.</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 15, "cocktail_price_max": 18,
+    "entree_price_min": 32, "entree_price_max": 54,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": true, "stated_capacity": 40,
+    "event_contact_email": "host@staticsupper.test",
+    "contact_method": "email",
+    "event_keywords_found": ["private dining"],
+    "confidence": "high",
+    "evidence": "Cocktails $15-$18 and entrees $32-$54 from /menus; 40-seat private dining room with email on the same page."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "high",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["Ribeye $54", "Martini Service $18", "seats 40"],
+    "sources_include": ["https://staticsupper.test/menus"]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "venue": {
+    "place_id": "golden_buyout_flexible",
+    "name": "Hearthside Hall",
+    "formatted_address": "300 W Fake Rd, Chicago, IL 60654",
+    "website_uri": "https://hearthsidehall.test/"
+  },
+  "web": {
+    "https://hearthsidehall.test/": {
+      "status": 200,
+      "text": "<html><head><title>Hearthside Hall</title></head><body><nav><a href=\"/groups\">Groups</a></nav><p>River North event hall and restaurant.</p></body></html>"
+    },
+    "https://hearthsidehall.test/groups": {
+      "status": 200,
+      "text": "<html><body><h1>Group Dining</h1><p>Full buyouts from $20,000. Our semi-private mezzanine hosts 30-60 guests with a $5,000 food and beverage minimum.</p><p>Email groups@hearthsidehall.test.</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": null, "cocktail_price_max": null,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": 5000, "buyout_price_usd": 20000,
+    "semi_private_available": true, "stated_capacity": 60,
+    "event_contact_email": "groups@hearthsidehall.test",
+    "contact_method": "email",
+    "event_keywords_found": ["full buyouts", "semi-private", "group dining"],
+    "confidence": "high",
+    "evidence": "The $20,000 buyout, $5,000 semi-private minimum and 60-guest mezzanine are stated on /groups."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": ["buyout_high_but_flexible"],
+    "price_signal": "mid",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["$20,000", "semi-private mezzanine"]
+  }
+}

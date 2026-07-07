@@ -1,0 +1,44 @@
+{
+  "venue": {
+    "place_id": "golden_pdf_menu",
+    "name": "Cellar Door",
+    "formatted_address": "77 E Fake Blvd, Chicago, IL 60601",
+    "website_uri": "https://cellardoorchi.test/"
+  },
+  "web": {
+    "https://cellardoorchi.test/": {
+      "status": 200,
+      "text": "<html><head><title>Cellar Door</title></head><body><nav><a href=\"/menu.pdf\">Menu (PDF)</a><a href=\"/contact\">Contact</a></nav><p>Subterranean wine and cocktail den in the Loop.</p></body></html>"
+    },
+    "https://cellardoorchi.test/menu.pdf": {
+      "status": 200,
+      "content_type": "application/pdf",
+      "generate": {
+        "type": "pdf_menu",
+        "lines": ["CELLAR DOOR", "Cocktails", "Vieux Carre $17", "Sazerac $16", "Wine by the glass $14-$22"]
+      }
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 16, "cocktail_price_max": 17,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": null, "stated_capacity": null,
+    "event_contact_email": null,
+    "contact_method": "none",
+    "event_keywords_found": [],
+    "confidence": "medium",
+    "evidence": "Cocktail prices $16-$17 read from the PDF menu; no event information found."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "high",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": true,
+    "sources_include": ["https://cellardoorchi.test/menu.pdf"]
+  }
+}

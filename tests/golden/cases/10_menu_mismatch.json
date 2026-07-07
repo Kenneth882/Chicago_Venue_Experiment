@@ -1,0 +1,40 @@
+{
+  "venue": {
+    "place_id": "golden_menu_mismatch",
+    "name": "Canal Street Social",
+    "formatted_address": "600 S Fake Canal, Chicago, IL 60607",
+    "website_uri": "https://canalstsocial.test/"
+  },
+  "web": {
+    "https://canalstsocial.test/": {
+      "status": 200,
+      "text": "<html><head><title>Canal Street Social</title></head><body><nav><a href=\"/menu\">Menu</a></nav><p>West Loop cocktails and small plates.</p></body></html>"
+    },
+    "https://canalstsocial.test/menu": {
+      "status": 200,
+      "text": "<html><body><h1>Bella Roma Trattoria — Scottsdale, AZ</h1><p>Spaghetti Carbonara $21</p><p>Tiramisu $11</p><p>123 E Camelback Rd, Scottsdale</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": false,
+    "cocktail_price_min": null, "cocktail_price_max": null,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": null, "stated_capacity": null,
+    "event_contact_email": null,
+    "contact_method": "none",
+    "event_keywords_found": [],
+    "confidence": "medium",
+    "evidence": "The menu page belongs to Bella Roma Trattoria in Scottsdale, AZ — not Canal Street Social in Chicago."
+  },
+  "expected": {
+    "stage": "needs_review",
+    "eliminated_reason": "menu_identity_mismatch",
+    "flags": ["menu_identity_mismatch"],
+    "price_signal": null,
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["Bella Roma Trattoria"]
+  }
+}

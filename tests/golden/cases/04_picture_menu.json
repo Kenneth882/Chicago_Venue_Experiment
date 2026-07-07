@@ -1,0 +1,44 @@
+{
+  "venue": {
+    "place_id": "golden_picture_menu",
+    "name": "Taqueria Norte",
+    "formatted_address": "2100 N Fake Ave, Chicago, IL 60647",
+    "website_uri": "https://taquerianorte.test/"
+  },
+  "web": {
+    "https://taquerianorte.test/": {
+      "status": 200,
+      "text": "<html><head><title>Taqueria Norte</title></head><body><nav><a href=\"/menu-photo\">Our Menu</a></nav><p>Logan Square tacos y margaritas.</p></body></html>"
+    },
+    "https://taquerianorte.test/menu-photo": {
+      "status": 200,
+      "content_type": "image/jpeg",
+      "generate": {
+        "type": "image_menu",
+        "lines": ["TAQUERIA NORTE", "Margarita $12", "Paloma $11", "Tacos al Pastor $16", "Carne Asada $24"]
+      }
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 11, "cocktail_price_max": 12,
+    "entree_price_min": 16, "entree_price_max": 24,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": null, "stated_capacity": null,
+    "event_contact_email": null,
+    "contact_method": "none",
+    "event_keywords_found": [],
+    "confidence": "medium",
+    "evidence": "Prices read from the photographed menu: margaritas $11-$12, entrees $16-$24."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "low",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": true,
+    "sources_include": ["https://taquerianorte.test/menu-photo"]
+  }
+}

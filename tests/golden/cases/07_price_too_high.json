@@ -1,0 +1,40 @@
+{
+  "venue": {
+    "place_id": "golden_price_too_high",
+    "name": "Velvet Antler",
+    "formatted_address": "900 N Fake St, Chicago, IL 60610",
+    "website_uri": "https://velvetantler.test/"
+  },
+  "web": {
+    "https://velvetantler.test/": {
+      "status": 200,
+      "text": "<html><head><title>Velvet Antler</title></head><body><nav><a href=\"/private-events\">Private Events</a></nav><p>Gold Coast lounge.</p></body></html>"
+    },
+    "https://velvetantler.test/private-events": {
+      "status": 200,
+      "text": "<html><body><h1>Private Events</h1><p>The Velvet Antler is available exclusively as a full venue buyout at $15,000. No partial bookings.</p><p>Email rsvp@velvetantler.test.</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": null, "cocktail_price_max": null,
+    "entree_price_min": null, "entree_price_max": null,
+    "fnb_minimum_usd": null, "buyout_price_usd": 15000,
+    "semi_private_available": false, "stated_capacity": null,
+    "event_contact_email": "rsvp@velvetantler.test",
+    "contact_method": "email",
+    "event_keywords_found": ["full venue buyout"],
+    "confidence": "high",
+    "evidence": "The $15,000 exclusive buyout with no partial bookings is stated on /private-events."
+  },
+  "expected": {
+    "stage": "eliminated",
+    "eliminated_reason": "flag_price_too_high",
+    "flags": ["flag_price_too_high"],
+    "price_signal": null,
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["$15,000"]
+  }
+}
