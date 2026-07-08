@@ -1,0 +1,52 @@
+{
+  "venue": {
+    "place_id": "golden_provider_pdf",
+    "name": "Maplewood Hall",
+    "formatted_address": "2200 W Fake Blvd, Chicago, IL 60647",
+    "website_uri": "https://maplewoodhall.test/"
+  },
+  "web": {
+    "https://maplewoodhall.test/": {
+      "status": 200,
+      "text": "<html><head><title>Maplewood Hall</title></head><body><nav><a href=\"https://cdn2.getbento.com/maplewoodhall/dinner-menu.pdf\">Dinner Menu</a><a href=\"/visit\">Visit</a></nav><h1>Maplewood Hall</h1><p>A Logan Square gathering hall with long tables, draft cocktails, and a hearth kitchen. Seasonal menus posted as they change; buyout inquiries welcome year round for celebrations of all sizes.</p></body></html>"
+    },
+    "https://cdn2.getbento.com/maplewoodhall/dinner-menu.pdf": {
+      "status": 200,
+      "content_type": "application/pdf",
+      "generate": {
+        "type": "pdf_menu",
+        "lines": [
+          "Maplewood Hall — Dinner",
+          "Old Fashioned 16",
+          "Daiquiri 14",
+          "Hearth Chicken 27",
+          "Buyouts from $8,000",
+          "events@maplewoodhall.test"
+        ]
+      }
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 14, "cocktail_price_max": 16,
+    "entree_price_min": 27, "entree_price_max": 27,
+    "fnb_minimum_usd": null, "buyout_price_usd": 8000,
+    "semi_private_available": null, "stated_capacity": null,
+    "event_contact_email": "events@maplewoodhall.test",
+    "contact_method": "email",
+    "event_keywords_found": ["buyouts"],
+    "confidence": "high",
+    "evidence": "Cocktails $14-$16, Hearth Chicken $27, buyouts from $8,000, and the events email all from the BentoBox-hosted dinner menu PDF."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "mid",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": true,
+    "llm_text_contains": ["Maplewood Hall"],
+    "sources_include": ["https://cdn2.getbento.com/maplewoodhall/dinner-menu.pdf"]
+  }
+}

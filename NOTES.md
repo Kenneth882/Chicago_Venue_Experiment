@@ -145,6 +145,72 @@ rather than duplicating.
   venues with no findable menu; Batch API for the full ~177-venue run;
   LLM identity tiebreak for stage-2 needs_review rows.
 
+## Menu-provider follow (2026-07-08, fix for the 2/10 smoke pass rate)
+- Root cause of most smoke misses: menus hosted on third-party platforms
+  (Toast/toasttab, BentoBox/getbento, Popmenu, Grubhub, ...). The menu never
+  enters the venue page DOM even after Playwright rendering (Parlay: 2.26MB
+  rendered HTML, 4.4K visible chars, zero prices) — NOT a js-shell-threshold
+  problem; the hosted page itself must be fetched.
+- Fix in stage3_extract: `MENU_PROVIDER_DOMAINS` (host-suffix match) +
+  `provider_links()` scans <a> AND <iframe> on the homepage and every fetched
+  content page; up to MAX_PROVIDER_PAGES=2 hosted pages fetched via
+  fetch_page (JS-shell -> Playwright escalation applies, Toast pages are
+  SPAs). Hosted pages count as content, so a hosted-menu venue is never
+  menu_unavailable. Golden cases 11 (Toast JS shell -> rendered) and
+  12 (BentoBox PDF -> vision) cover it.
+- LLM input ordering matters: hosted-menu text is placed immediately after
+  the homepage part so the 24K-char budget can never truncate the actual
+  menu behind less useful site pages.
+- Discovery changes (Kenneth-directed, 2026-07-08): known-path guesses are
+  now used ONLY when sitemap+nav+Claude find nothing (they mostly 404 and
+  waste fetches once real pages are known); candidate dedup and fetched-page
+  dedup are trailing-slash- and redirect-(final_url-)insensitive. NOTE:
+  CLAUDE.md Stage 3 wording still lists known paths first — flagged, not
+  edited.
+- stage3 CLI gained `--place-id` (repeatable) for re-running a specific set;
+  still gated on stage=2_filtered_ok so eliminated rows can't be reprocessed.
+- **Provider bot walls vary.** grubhub.com: raw httpx 200. ezcater.com: 403
+  httpx, Playwright OK. order.toasttab.com: 403 httpx AND flaky under
+  hardened Playwright (Theory's page rendered fine; Parlay's stayed 403).
+  ubereats.com: 307 to a challenge page. Failures are non-fatal — the venue
+  just extracts from whatever else was found.
+- **Provider links can belong to a sister venue** (Parlay's site links to
+  order.toasttab.com/online/joydistrict — Joy District, same group). The
+  extraction prompt's menu_matches_venue check is the guard; watch for it
+  in audits.
+- **Cloudflare email obfuscation corrupted event_contact_email**: protected
+  addresses render as "[email protected]" and Haiku faithfully copied it
+  (Hawksmoor, confidence=high). Fixed deterministically: html_to_text now
+  XOR-decodes data-cfemail (verified live: chicago@thehawksmoor.com), and
+  sanitize_extraction() nulls any non-email-shaped value with flag
+  invalid_email_nulled. Matters because email-contactability is ~15% of the
+  Stage 4 score and drives top-500 ordering.
+
+## Sonnet low-confidence retry (2026-07-08, model policy now implemented)
+- CLAUDE.md model policy ("low-confidence retries: Sonnet-class") is now in
+  llm.extract_venue_data: a low-confidence TEXT extraction is retried once
+  on claude-sonnet-5; the retry result wins either way; vision calls (already
+  Sonnet) never retry. Unit-tested with a fake client.
+- **Haiku confidence flaps on identical input**: Berkshire Room went
+  medium -> low -> medium across three runs of the same cached content. The
+  retry is the safety net for downward flaps.
+- On the 10-venue smoke, all 4 Sonnet retries CONFIRMED low — those sites
+  genuinely print no pricing (City Winery, Doc B's, Starbucks Reserve,
+  Lulu's). needs_review now means "verified unclear", not "Haiku shrugged".
+
+## 10-venue smoke re-run results (2026-07-08, after all fixes)
+- Was 2/10 genuine passes. Now: 5 -> 3_enriched (Parlay, Hawksmoor, Theory,
+  Club Lago, Berkshire), 1 menu_unavailable flag (Kitty's), 4 needs_review
+  (Sonnet-verified low). Venues with real extracted numbers: 2 -> 4-5.
+- Hawksmoor's menu_identity_mismatch fixed by the discovery reordering (now
+  reads /us/locations/chicago/... instead of the UK menu): high confidence,
+  $69 filet, capacity 500, real email.
+- Parlay + Club Lago pass at medium confidence with event evidence but no
+  numbers (their sites print none; Parlay's toast page 403'd). Not wrong —
+  but Stage 4's event-capability gate will judge them.
+- 14 LLM calls for 10 venues (4 Sonnet retries); ~7K input tokens/venue on
+  Haiku, ~4-12K on Sonnet retries. Cheap: full 164-venue run est. $3-5 sync.
+
 ## Hotel-restaurant blocklist gap (proposal only, NOT implemented)
 - 676 Restaurant & Bar is the Omni Chicago Hotel's restaurant, but its
   Places types are purely restaurant/bar (`american_restaurant,
@@ -174,6 +240,25 @@ rather than duplicating.
 - Non-mandated modules (places, fetch, llm, stage1, stage2) created as
   docstring-only stubs so the CLAUDE.md repo layout exists without starting
   Work order 2.
+
+## State as of 2026-07-08
+- Menu-provider follow + discovery cleanup + Sonnet low-conf retry + cfemail
+  decode all implemented and live-verified on the 10-venue smoke (see the
+  2026-07-08 sections above). pytest = 99 passed, golden set now 12 cases.
+- Tracker: 164 at 2_filtered_ok (Stage 3 queue), 8 at 3_enriched, 58
+  eliminated, 29 needs_review (12 website_dead_once retry queue, 12 Stage 2
+  identity band, 5 extraction_low_confidence incl. The Dearborn from the
+  first 3-venue smoke).
+- OPEN DECISION for the full 164 run: CLAUDE.md model policy says "Batch API
+  for the full Stage 3 run", but at observed token volumes the whole run is
+  ~$3-5 sync — batch would save ~$2 and cost a work order (fetch/extract are
+  interleaved; batching means restructuring into collect-all -> submit ->
+  poll -> write-back). Assessment: not worth it at this scale; awaiting
+  Kenneth's call before running (spec-is-judge rule).
+- CLAUDE.md Stage 3 wording still says discovery is "via known paths,
+  sitemap.xml grep, then nav-link keyword match" — implementation now tries
+  known paths LAST (only when nothing else found), per Kenneth's directive.
+  CLAUDE.md not edited pending his sign-off.
 
 ## State as of 2026-07-07 (late)
 - M4 (Stage 3) implemented: llm.py (structured-output extraction + nav-link

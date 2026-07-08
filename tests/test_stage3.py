@@ -248,6 +248,35 @@ def test_is_js_shell():
     assert not is_js_shell("<html><body><p>" + "real content " * 30 + "</p></body></html>")
 
 
+def test_html_to_text_decodes_cloudflare_emails():
+    real = "events@hawksmoor.com"
+    key = 0x42
+    encoded = bytes([key] + [ord(c) ^ key for c in real]).hex()
+    html = (f'<p>Email <a href="/cdn-cgi/l/email-protection" class="__cf_email__" '
+            f'data-cfemail="{encoded}">[email&#160;protected]</a> to book.</p>')
+    text = html_to_text(html)
+    assert real in text
+    assert "protected]" not in text
+
+
+def test_html_to_text_bad_cfemail_attr_is_ignored():
+    assert "hi" in html_to_text('<p data-cfemail="zz">hi</p>')
+
+
+def test_sanitize_extraction_nulls_junk_email():
+    from src.stage3_extract import sanitize_extraction
+    x = {"event_contact_email": "[email protected]", "contact_method": "email"}
+    assert sanitize_extraction(x) == ["invalid_email_nulled"]
+    assert x["event_contact_email"] is None
+
+    ok = {"event_contact_email": "events@venue.com"}
+    assert sanitize_extraction(ok) == []
+    assert ok["event_contact_email"] == "events@venue.com"
+
+    missing = {"event_contact_email": None}
+    assert sanitize_extraction(missing) == []
+
+
 def test_html_to_text_strips_scripts():
     text = html_to_text("<html><body><p>Menu $14</p><script>var x=1;</script><style>p{}</style></body></html>")
     assert "Menu $14" in text and "var x" not in text
@@ -277,8 +306,123 @@ def test_discover_calls_claude_fallback_only_when_keywords_miss(offline, monkeyp
                         lambda name, links, **k: picked.append(links) or ["https://v.test/imbibe"])
     candidates = discover_candidates("Venue", homepage)
     assert picked, "Claude fallback not consulted"
-    assert "https://v.test/imbibe" in candidates
-    assert candidates[0] == "https://v.test/menu"  # known paths come first
+    # Claude found a real page, so known-path guesses are skipped entirely
+    assert candidates == ["https://v.test/imbibe"]
+
+
+def test_discover_known_paths_only_when_nothing_found(offline, monkeypatch):
+    homepage = fetch.CachedResponse(
+        url="https://v.test/", status=200, final_url="https://v.test/",
+        headers={"content-type": "text/html"}, text="<p>No links at all.</p>",
+    )
+    monkeypatch.setattr(llm, "classify_nav_links",
+                        lambda *a, **k: pytest.fail("no links -> no Claude call"))
+    candidates = discover_candidates("Venue", homepage)
+    assert candidates == ["https://v.test" + p for p in stage3_extract.KNOWN_PATHS]
+
+
+def test_discover_skips_known_paths_when_nav_matches(offline):
+    homepage = fetch.CachedResponse(
+        url="https://v.test/", status=200, final_url="https://v.test/",
+        headers={"content-type": "text/html"},
+        text='<a href="/food">Food</a><a href="/about">About</a>',
+    )
+    candidates = discover_candidates("Venue", homepage)
+    assert candidates == ["https://v.test/food"]
+
+
+def test_discover_dedup_is_trailing_slash_insensitive(offline):
+    homepage = fetch.CachedResponse(
+        url="https://v.test/", status=200, final_url="https://v.test/",
+        headers={"content-type": "text/html"},
+        text='<a href="/food">Food</a><a href="/food/">Food menu</a>'
+             '<a href="/drinks/">Drinks</a>',
+    )
+    candidates = discover_candidates("Venue", homepage)
+    assert candidates == ["https://v.test/food", "https://v.test/drinks/"]
+
+
+# --- menu-provider follow ---
+
+def test_provider_links_anchors_iframes_subdomains():
+    from src.stage3_extract import provider_links
+    html = (
+        '<a href="https://www.toasttab.com/venue-x">Order</a>'
+        '<a href="https://order.toasttab.com/menus/venue-x/">Menu</a>'
+        '<iframe src="https://cdn2.getbento.com/venue/menu.pdf"></iframe>'
+        '<a href="https://not-a-provider.test/menu">Menu</a>'
+        '<a href="https://faketoasttab.com/x">Spoof</a>'
+        '<a href="mailto:events@v.test">Email</a>'
+        '<a href="https://www.toasttab.com/venue-x/">Order again</a>'
+    )
+    links = provider_links(html, "https://v.test/")
+    assert links == [
+        "https://www.toasttab.com/venue-x",
+        "https://order.toasttab.com/menus/venue-x/",
+        "https://cdn2.getbento.com/venue/menu.pdf",
+    ]
+
+
+def test_provider_links_relative_hrefs_never_match():
+    from src.stage3_extract import provider_links
+    assert provider_links('<a href="/menu">Menu</a>', "https://v.test/") == []
+
+
+# --- low-confidence Sonnet retry (model policy, no live API) ---
+
+class _FakeResponse:
+    def __init__(self, payload):
+        self.content = [type("B", (), {"type": "text", "text": json.dumps(payload)})()]
+        self.usage = type("U", (), {"input_tokens": 1, "output_tokens": 1})()
+
+
+def _fake_client(create):
+    return type("C", (), {"messages": type("M", (), {"create": staticmethod(create)})()})()
+
+
+def test_low_confidence_text_extraction_retries_on_sonnet(monkeypatch):
+    calls = []
+    def create(*, model, **kw):
+        calls.append(model)
+        conf = "low" if model == llm.MODEL_TEXT else "high"
+        return _FakeResponse({"confidence": conf})
+    monkeypatch.setattr(llm, "_client", _fake_client(create))
+    before = llm.request_count
+    result = llm.extract_venue_data("V", "A", text="menu", source_urls=["u"])
+    assert calls == [llm.MODEL_TEXT, llm.MODEL_VISION]
+    assert result["confidence"] == "high"
+    assert llm.request_count == before + 2
+
+
+def test_low_confidence_retry_result_wins_even_if_still_low(monkeypatch):
+    calls = []
+    def create(*, model, **kw):
+        calls.append(model)
+        return _FakeResponse({"confidence": "low", "marker": model})
+    monkeypatch.setattr(llm, "_client", _fake_client(create))
+    result = llm.extract_venue_data("V", "A", text="menu", source_urls=["u"])
+    assert calls == [llm.MODEL_TEXT, llm.MODEL_VISION]
+    assert result["marker"] == llm.MODEL_VISION
+
+
+def test_confident_text_extraction_not_retried(monkeypatch):
+    calls = []
+    def create(*, model, **kw):
+        calls.append(model)
+        return _FakeResponse({"confidence": "medium"})
+    monkeypatch.setattr(llm, "_client", _fake_client(create))
+    llm.extract_venue_data("V", "A", text="menu", source_urls=["u"])
+    assert calls == [llm.MODEL_TEXT]
+
+
+def test_low_confidence_vision_extraction_not_retried(monkeypatch):
+    calls = []
+    def create(*, model, **kw):
+        calls.append(model)
+        return _FakeResponse({"confidence": "low"})
+    monkeypatch.setattr(llm, "_client", _fake_client(create))
+    llm.extract_venue_data("V", "A", images=[("image/jpeg", "aGk=")], source_urls=["u"])
+    assert calls == [llm.MODEL_VISION]
 
 
 def test_extraction_schema_matches_claude_md_fields():

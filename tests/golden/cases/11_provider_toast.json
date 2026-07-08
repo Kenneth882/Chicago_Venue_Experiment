@@ -1,0 +1,51 @@
+{
+  "venue": {
+    "place_id": "golden_provider_toast",
+    "name": "Wicker Park Provisions",
+    "formatted_address": "1600 N Fake Ave, Chicago, IL 60622",
+    "website_uri": "https://wpprovisions.test/"
+  },
+  "web": {
+    "https://wpprovisions.test/": {
+      "status": 200,
+      "text": "<html><head><title>Wicker Park Provisions</title></head><body><nav><a href=\"/private-events\">Private Events</a><a href=\"/about\">About</a><a href=\"https://www.toasttab.com/wicker-park-provisions\">Order Online</a></nav><h1>Wicker Park Provisions</h1><p>A neighborhood tavern and kitchen on the 606. Craft cocktails, wood-fired plates, and a patio for warm nights. Our full menu and online ordering live with our friends at Toast.</p></body></html>"
+    },
+    "https://wpprovisions.test/private-events": {
+      "status": 200,
+      "text": "<html><body><h1>Private Events</h1><p>Semi-private back room for up to 60 guests. No room fee. Inquire via our event form and our team will follow up within two business days.</p></body></html>"
+    },
+    "https://www.toasttab.com/wicker-park-provisions": {
+      "status": 200,
+      "text": "<html><head><title>Toast</title></head><body><div id=\"banquetApp\"></div><script src=\"https://www.toasttab.com/static/app.js\"></script></body></html>"
+    }
+  },
+  "rendered": {
+    "https://www.toasttab.com/wicker-park-provisions": {
+      "status": 200,
+      "text": "<html><head><title>Wicker Park Provisions | Toast</title></head><body><h1>Wicker Park Provisions</h1><h2>Cocktails</h2><p>Bourbon Renewal $15</p><p>Jungle Bird $17</p><h2>Kitchen</h2><p>Smash Burger $18</p><p>Half Roast Chicken $29</p></body></html>"
+    }
+  },
+  "llm_response": {
+    "menu_matches_venue": true,
+    "cocktail_price_min": 15, "cocktail_price_max": 17,
+    "entree_price_min": 18, "entree_price_max": 29,
+    "fnb_minimum_usd": null, "buyout_price_usd": null,
+    "semi_private_available": true, "stated_capacity": 60,
+    "event_contact_email": null,
+    "contact_method": "form_only",
+    "event_keywords_found": ["private events", "semi-private"],
+    "confidence": "high",
+    "evidence": "Cocktails $15-$17 and entrees $18-$29 from the Toast-hosted menu page; semi-private back room for 60 guests with an inquiry form from /private-events."
+  },
+  "expected": {
+    "stage": "3_enriched",
+    "eliminated_reason": null,
+    "flags": [],
+    "price_signal": "mid",
+    "menu_unavailable": false,
+    "llm_called": true,
+    "llm_used_vision": false,
+    "llm_text_contains": ["HOSTED MENU PAGE", "Bourbon Renewal $15", "Half Roast Chicken $29", "up to 60 guests"],
+    "sources_include": ["https://www.toasttab.com/wicker-park-provisions", "https://wpprovisions.test/private-events"]
+  }
+}

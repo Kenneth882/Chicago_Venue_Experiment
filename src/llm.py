@@ -9,7 +9,9 @@ Structured outputs (output_config.format) guarantee schema-valid JSON, so the
 prompt, and callers never need to repair output.
 
 Model policy (CLAUDE.md): text extraction on Haiku-class, vision (PDF/photo
-menus) on Sonnet-class. Batch API for the full run is a later work order.
+menus) on Sonnet-class, and a low-confidence text extraction is retried ONCE
+on Sonnet-class (the retry result wins either way). Batch API for the full
+run is a later work order.
 """
 
 from __future__ import annotations
@@ -162,19 +164,30 @@ def extract_venue_data(
     body = prompt + ("\n\n--- WEBSITE CONTENT ---\n" + text if text else "")
     content.append({"type": "text", "text": body})
 
-    request_count += 1
-    response = _get_client().messages.create(
-        model=model,
-        max_tokens=MAX_TOKENS,
-        output_config={"format": {"type": "json_schema", "schema": EXTRACTION_SCHEMA}},
-        messages=[{"role": "user", "content": content}],
-    )
-    result = _parse_structured(response)
-    logger.info(
-        "extraction | %s | model=%s | confidence=%s | in=%d out=%d tokens",
-        venue_name, model, result.get("confidence"),
-        response.usage.input_tokens, response.usage.output_tokens,
-    )
+    def _call(call_model: str) -> dict[str, Any]:
+        global request_count
+        request_count += 1
+        response = _get_client().messages.create(
+            model=call_model,
+            max_tokens=MAX_TOKENS,
+            output_config={"format": {"type": "json_schema", "schema": EXTRACTION_SCHEMA}},
+            messages=[{"role": "user", "content": content}],
+        )
+        result = _parse_structured(response)
+        logger.info(
+            "extraction | %s | model=%s | confidence=%s | in=%d out=%d tokens",
+            venue_name, call_model, result.get("confidence"),
+            response.usage.input_tokens, response.usage.output_tokens,
+        )
+        return result
+
+    result = _call(model)
+    # Model policy (CLAUDE.md): low-confidence retries go to Sonnet-class.
+    # One retry, and only when the first pass wasn't already on that model.
+    if result.get("confidence") == "low" and model != MODEL_VISION:
+        logger.info("low confidence on %s — retrying on %s | %s",
+                    model, MODEL_VISION, venue_name)
+        result = _call(MODEL_VISION)
     return result
 
 
