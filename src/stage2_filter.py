@@ -4,14 +4,14 @@ CLI: python -m src.stage2_filter [--limit N] [--dry-run]
 
 Operates on all venues at stage 1_geo_ok. Checks run in this exact order,
 stopping at the first failure; each failure sets stage='eliminated' with a
-reason code:
+reason code. (The rating/review-count gate was removed 2026-07-08: quality
+is scored by Stage 4's rating*log(review_count) weight, not gated here —
+filter on fatal, score on quality.)
 
   1. business_status == OPERATIONAL          else not_operational
-  2. rating >= 4.0                           else rating_below_4
-     user_rating_count >= 50                 else too_few_reviews
-  3. price_level null or <= 3                else price_level_high
-  4. website_uri present                     else no_website
-  5. website fetch returns HTTP 200          else two-strike policy:
+  2. price_level null or <= 3                else price_level_high
+  3. website_uri present                     else no_website
+  4. website fetch returns HTTP 200          else two-strike policy:
      httpx first (cheap path unchanged); on 403/429, timeout/transport
      failure, or 5xx the fetch escalates ONCE to the hardened Playwright
      fallback (never on robots_disallowed or plain 4xx like 404). A
@@ -21,7 +21,7 @@ reason code:
      (bot-blocked sites recover instead of dying on one bad fetch — and
      hardened Playwright itself flakes on some bot walls, so a rendered
      failure still only counts as one strike)
-  6. identity token-overlap score:
+  5. identity token-overlap score:
      >= 0.6 pass | <= 0.2 website_identity_mismatch | middle -> needs_review
      (No Claude tiebreak in this phase.)
 
@@ -62,16 +62,14 @@ GENERIC_TOKENS = {
 }
 
 
-# --- checks 1-4: offline, on data Stage 1 already fetched ---
+# --- checks 1-3: offline, on data Stage 1 already fetched ---
+# (No rating/review gate: rating_below_4 / too_few_reviews are no longer
+#  producible — quality lives in Stage 4's rating*log(review_count) weight.)
 
 def offline_check(venue: Any) -> Optional[str]:
-    """Returns the elimination reason, or None if checks 1-4 all pass."""
+    """Returns the elimination reason, or None if checks 1-3 all pass."""
     if venue["business_status"] != "OPERATIONAL":
         return "not_operational"
-    if venue["rating"] is None or venue["rating"] < 4.0:
-        return "rating_below_4"
-    if venue["user_rating_count"] is None or venue["user_rating_count"] < 50:
-        return "too_few_reviews"
     if venue["price_level"] is not None and venue["price_level"] > 3:
         return "price_level_high"
     if not venue["website_uri"]:
@@ -79,7 +77,7 @@ def offline_check(venue: Any) -> Optional[str]:
     return None
 
 
-# --- check 6: identity match (pure, unit-tested) ---
+# --- check 5: identity match (pure, unit-tested) ---
 
 def _singular(t: str) -> str:
     # naive plural fold so "cocktails" matches "cocktail"
@@ -137,7 +135,7 @@ def extract_identity_fields(html: str) -> tuple[str, str]:
     return title, og_name
 
 
-# --- check 5: website fetch with one-shot Playwright escalation ---
+# --- check 4: website fetch with one-shot Playwright escalation ---
 
 def _should_escalate(status: int) -> bool:
     """Statuses worth ONE hardened-Playwright attempt: bot challenges
@@ -148,7 +146,7 @@ def _should_escalate(status: int) -> bool:
 
 
 def check_website(url: str) -> tuple[fetch.CachedResponse, bool]:
-    """-> (response for checks 5+6, rescued_by_render). httpx first — the
+    """-> (response for checks 4+5, rescued_by_render). httpx first — the
     happy path is unchanged. A rendered response wins only when it's a 200;
     any rendered failure falls back to the httpx response for the strike."""
     resp = fetch.get(url)
@@ -239,9 +237,8 @@ def run(conn: Any, *, limit: Optional[int] = None, dry_run: bool = False) -> Cou
 
 def print_funnel(funnel: Counter, dry_run: bool) -> None:
     order = [
-        "not_operational", "rating_below_4", "too_few_reviews",
-        "price_level_high", "no_website", "website_dead",
-        "website_identity_mismatch",
+        "not_operational", "price_level_high", "no_website",
+        "website_dead", "website_identity_mismatch",
     ]
     print(f"\nfunnel — in (1_geo_ok): {funnel['in_1_geo_ok']}"
           + (f" + retry queue: {funnel['in_website_retry_queue']}"

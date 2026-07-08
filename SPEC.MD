@@ -192,13 +192,22 @@ stage `1_geo_ok` (Stage 1 sets survivors to `1_geo_ok`).
 Checks in this exact order, stopping at first failure; each failure sets
 `stage='eliminated'` + reason code:
 
+(Amended 2026-07-08: the rating/review-count gate — originally check 2,
+`rating >= 4.0 AND user_rating_count >= 50` → `rating_below_4` /
+`too_few_reviews` — is removed entirely and the remaining checks are
+renumbered. Quality is scored, not gated: Stage 4's rating*log(review_count)
+weight (~20%, unchanged) handles it, so a low-rated venue ranks lower
+instead of dying here. Both reason codes are no longer producible; the 43
+rows previously killed by the gate were resurrected to `1_geo_ok` and
+re-filtered through the remaining checks. This also moots the old
+CLAUDE.md-25-vs-SPEC-50 review-floor discrepancy.)
+
 1. `business_status == "OPERATIONAL"` → else `not_operational`
-2. `rating >= 4.0 AND user_rating_count >= 50` → else `rating_below_4` / `too_few_reviews`
-3. `price_level is null OR price_level <= 3` → else `price_level_high`
-4. `website_uri` present → else `no_website`
-5. HTTP check (httpx, follow redirects, 10s timeout, browser-like header set,
+2. `price_level is null OR price_level <= 3` → else `price_level_high`
+3. `website_uri` present → else `no_website`
+4. HTTP check (httpx, follow redirects, 10s timeout, browser-like header set,
    one retry after 3s on 403/429/timeout, via cached fetch layer in
-   `src/fetch.py`): status 200 → pass on to check 6. Otherwise two-strike:
+   `src/fetch.py`): status 200 → pass on to check 5. Otherwise two-strike:
    the first failing run sets `stage='needs_review'` with marker
    `website_dead_once` (re-checked automatically on the next run); a second
    consecutive failing run sets `eliminated` / `website_dead`. Bot-challenge
@@ -212,14 +221,14 @@ Checks in this exact order, stopping at first failure; each failure sets
    to the hardened Playwright fetch built in M4 (`fetch.get_rendered`) — but
    only for bot-wall/transient statuses: 403/429, timeout/transport failure,
    5xx. Never for robots_disallowed and never for plain 4xx like 404, which
-   are genuinely dead. A rendered 200 passes on to check 6 using the rendered
+   are genuinely dead. A rendered 200 passes on to check 5 using the rendered
    HTML and final URL; a rendered failure falls into the two-strike policy
    above. The two-strike policy stays even though a strike now means both
    paths failed — hardened Playwright itself flakes on some bot walls (see
    NOTES.md: order.toasttab.com rendered for one venue and 403'd for another
    the same day). This drains the 12-venue JA3 retry queue from the
    2026-07-07 incident.)
-6. Identity match: compare venue name against final redirect domain, `<title>`, and
+5. Identity match: compare venue name against final redirect domain, `<title>`, and
    `og:site_name` using a normalized token-overlap score.
    Score ≥ 0.6 → pass. Score ≤ 0.2 → `website_identity_mismatch`.
    Middle band (0.2–0.6) → set `stage='needs_review'` for now. Do NOT call Claude in this
@@ -233,8 +242,9 @@ Survivors → `stage='2_filtered_ok'`. Log every elimination at INFO:
 
 **M3 acceptance:**
 1. Run against M2's rows; print a funnel summary (count in → count per reason → count out).
-2. A pytest that runs checks 1–4 against 6 hand-built fixture records (no network) and
-   asserts the right reason codes.
+2. A pytest that runs the offline checks against hand-built fixture records (no network)
+   and asserts the right reason codes. (Originally checks 1–4 / 6 records; the
+   rating/review fixtures went away with the 2026-07-08 gate removal.)
 3. Manual: we spot-check 10 eliminated rows together and every reason is correct.
 
 ---

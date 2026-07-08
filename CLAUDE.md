@@ -45,10 +45,11 @@ Success metric: ≥500 tracker rows at `stage = 0_sourced`, with <5% later elimi
   pure `night_club`), normalize, upsert. Emit per-cell stats: raw_results, killed_geo,
   killed_type, new_rows, dupes, hit_60_cap.
 - **Stage 2 — cheap filter gate**, ordered cheapest-first, on data already fetched:
-  `business_status == OPERATIONAL` → `rating >= 4.0 AND user_ratings_total >= 25` →
-  `price_level <= 3` → website returns 200 after redirects → website identity match (final
-  redirect domain + <title> + og:site_name fuzzy-matched against venue name; ambiguous
-  middle scores go to a small Claude call, not everything).
+  `business_status == OPERATIONAL` → `price_level <= 3` → website returns 200 after
+  redirects → website identity match (final redirect domain + <title> + og:site_name
+  fuzzy-matched against venue name; ambiguous middle scores go to a small Claude call,
+  not everything). (Rating/review floor removed 2026-07-08 — quality is scored by
+  Stage 4's rating*log(review_count) weight, not gated; see SPEC.md WO4.)
 - **Stage 3 — menu deep-dive** (the only LLM-heavy stage, ~800–1000 survivors):
   fetch homepage (httpx, real UA, 10s timeout, per-domain rate limit, cached) → discover
   menu/private-event pages via sitemap.xml grep, then nav-link keyword match with Claude

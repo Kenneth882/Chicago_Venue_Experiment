@@ -73,9 +73,10 @@ rather than duplicating.
   name "Machine Cocktail Bar". Implemented in `_tokens`; 1-char strip, len>3.
 - Domain matching must be substring-on-squashed-host (theviolethour.com
   contains "violet"+"hour"), not token equality — domains concatenate words.
-- **SPEC/CLAUDE.md discrepancy, unresolved:** CLAUDE.md Stage 2 says
-  `user_ratings_total >= 25`; SPEC.md WO4 says `user_rating_count >= 50`.
-  Implemented 50 per SPEC (phase spec governs). Kenneth should reconcile.
+- **25-vs-50 review floor: RESOLVED 2026-07-08 by deletion.** The whole
+  rating/review gate was removed from Stage 2 (see "Stage 2 rating gate
+  removed" below), so the CLAUDE.md-25 vs SPEC-50 discrepancy is moot —
+  neither threshold exists anymore.
 
 ## Website fetching / bot detection (2026-07-07 incident: 12 false kills)
 - **Restaurant hosting platforms block the Python TLS stack outright.**
@@ -216,6 +217,35 @@ rather than duplicating.
 - 14 LLM calls for 10 venues (4 Sonnet retries); ~7K input tokens/venue on
   Haiku, ~4-12K on Sonnet retries. Cheap: full 164-venue run est. $3-5 sync.
 
+## Stage 2 rating gate removed (2026-07-08, approved)
+- Check 2 (rating >= 4.0 AND user_rating_count >= 50) deleted from Stage 2;
+  rating_below_4 / too_few_reviews are no longer producible. Rationale:
+  filter on fatal, score on quality — Stage 4's rating*log(review_count)
+  weight (~20%, untouched) makes low-rated venues rank lower instead of
+  dying. SPEC WO4 + CLAUDE.md Stage 2 amended (dated notes); checks
+  renumbered to operational -> price -> website -> identity.
+- The 43 gate-killed rows were resurrected to 1_geo_ok (never jumped to
+  2_filtered_ok — they'd never had the website/identity checks) and
+  re-filtered: 27 -> 2_filtered_ok, 5 no_website, 8 website_identity_
+  mismatch, 2 identity needs_review (Fame Cocktail Club, Drinking &
+  Writing Theater), 1 website_dead_once (Elements Nightlife: httpx timeout
+  + rendered 522 — auto-rechecks next run). Zero LLM calls. Stage 3 queue
+  173 -> 200.
+- **The resurrected population is hotel/parent-brand heavy** (it skews
+  nightclubs + hotel bars, which is what sub-4.0 ratings select for): 6 of
+  the 8 identity mismatches are venues whose website lives on a parent
+  domain — H Bar (hyatt.com), Fulton Tap (hilton.com), Holloways Bar +
+  The Chicagoan Lobby Bar (marriott.com), Mariposa + Bar on 4
+  (stores.neimanmarcus.com). Correct kills under the identity rule (the
+  page doesn't identify the venue), but they're exactly the
+  hotel_domains.json pattern — a human rescue pass over
+  website_identity_mismatch rows would be cheap if we're short of 500.
+  Also: Cava Room died because its URL redirects to sibling venue
+  moescantina.com (restaurant-group redirect, the Mercadito pattern).
+- M5/Stage 4 follow-up (NOT implemented): with the gate gone, scoring must
+  define deterministic handling for rating = NULL and tiny review counts —
+  log(1) = 0, log(0) undefined — a floor/default decided in code at M5.
+
 ## Stage 2 Playwright escalation + retry-queue drain (2026-07-08)
 - Check 5 now: httpx -> on 403/429/timeout/5xx escalate ONCE to
   fetch.get_rendered -> rendered 200 feeds check 6 (identity reads the
@@ -295,10 +325,11 @@ rather than duplicating.
 - Menu-provider follow + discovery cleanup + Sonnet low-conf retry + cfemail
   decode all implemented and live-verified on the 10-venue smoke (see the
   2026-07-08 sections above). pytest = 99 passed, golden set now 12 cases.
-- Tracker after the 2026-07-08 retry-queue drain: 173 at 2_filtered_ok
-  (Stage 3 queue), 8 at 3_enriched, 60 eliminated, 18 needs_review (13
-  Stage 2 identity band incl. Moe's Cantina, 5 extraction_low_confidence
-  incl. The Dearborn). website_dead_once queue: empty.
+- Tracker after the 2026-07-08 drain + gate removal: 200 at 2_filtered_ok
+  (Stage 3 queue), 8 at 3_enriched, 30 eliminated (10 no_website, 9
+  website_identity_mismatch, 9 price_level_high, 2 website_dead), 21
+  needs_review (15 identity band, 5 extraction_low_confidence, 1
+  website_dead_once = Elements Nightlife).
 - Batch-vs-sync for the full 164 run: RESOLVED 2026-07-08, see the spec-sync
   entry below (sync by default; CLAUDE.md updated).
 - CLAUDE.md discovery wording drift: RESOLVED 2026-07-08, see the spec-sync

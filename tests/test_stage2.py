@@ -1,5 +1,6 @@
-"""Stage 2 filter tests — checks 1-4 against hand-built records (no network),
-identity scoring, verdict thresholds, and the website_dead two-strike policy."""
+"""Stage 2 filter tests — offline checks against hand-built records (no
+network), identity scoring, verdict thresholds, and the website_dead
+two-strike policy with Playwright escalation."""
 
 import pytest
 
@@ -26,18 +27,10 @@ def record(**overrides):
     return base
 
 
-# --- M3 acceptance #2: 6 hand-built records, checks 1-4, right reason codes ---
+# --- hand-built records, offline checks 1-3, right reason codes ---
 
 def test_not_operational():
     assert offline_check(record(business_status="CLOSED_PERMANENTLY")) == "not_operational"
-
-
-def test_rating_below_4():
-    assert offline_check(record(rating=3.9)) == "rating_below_4"
-
-
-def test_too_few_reviews():
-    assert offline_check(record(user_rating_count=49)) == "too_few_reviews"
 
 
 def test_price_level_high():
@@ -59,13 +52,15 @@ def test_first_failure_wins():
     r = record(business_status="CLOSED_TEMPORARILY", rating=3.0,
                user_rating_count=5, price_level=4, website_uri=None)
     assert offline_check(r) == "not_operational"
-    # fails 2 and 3 — must report rating before reviews
-    assert offline_check(record(rating=3.5, user_rating_count=10)) == "rating_below_4"
+    # fails 2 and 3 — must report price before website
+    assert offline_check(record(price_level=4, website_uri=None)) == "price_level_high"
 
 
-def test_null_rating_and_reviews_fail():
-    assert offline_check(record(rating=None)) == "rating_below_4"
-    assert offline_check(record(user_rating_count=None)) == "too_few_reviews"
+def test_rating_and_review_count_are_not_gated():
+    # gate removed 2026-07-08: quality is Stage 4's job, never a kill here —
+    # rating_below_4 / too_few_reviews must no longer be producible
+    assert offline_check(record(rating=1.0, user_rating_count=1)) is None
+    assert offline_check(record(rating=None, user_rating_count=None)) is None
 
 
 def test_null_price_level_passes():
@@ -73,7 +68,7 @@ def test_null_price_level_passes():
 
 
 def test_boundary_values_pass():
-    assert offline_check(record(rating=4.0, user_rating_count=50, price_level=3)) is None
+    assert offline_check(record(price_level=3)) is None
 
 
 # --- identity scoring ---
