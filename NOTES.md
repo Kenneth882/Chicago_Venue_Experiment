@@ -241,6 +241,21 @@ rather than duplicating.
   docstring-only stubs so the CLAUDE.md repo layout exists without starting
   Work order 2.
 
+## Spec sync (2026-07-08, approved by Kenneth): both open decisions resolved
+- CLAUDE.md model policy updated: Stage 3 runs use the synchronous Messages
+  API by default; Batch API only worth revisiting if the queue grows roughly
+  an order of magnitude above current volume (sync cost would then
+  meaningfully exceed batch cost), since adopting it means restructuring the
+  interleaved fetch/extract flow into collect-all -> submit -> poll ->
+  write-back phases.
+- CLAUDE.md Stage 3 discovery wording updated to match the implementation:
+  sitemap.xml grep -> nav-link keyword match with Claude fallback -> known
+  paths as last resort, only when the first two find nothing (verified
+  against discover_candidates in stage3_extract.py before editing).
+- Spec-only change; no pipeline code touched. pytest = 99 passed after the
+  edits. CLAUDE.md is now synced with the implementation, and the full
+  164-venue Stage 3 sync run is unblocked.
+
 ## State as of 2026-07-08
 - Menu-provider follow + discovery cleanup + Sonnet low-conf retry + cfemail
   decode all implemented and live-verified on the 10-venue smoke (see the
@@ -249,16 +264,10 @@ rather than duplicating.
   eliminated, 29 needs_review (12 website_dead_once retry queue, 12 Stage 2
   identity band, 5 extraction_low_confidence incl. The Dearborn from the
   first 3-venue smoke).
-- OPEN DECISION for the full 164 run: CLAUDE.md model policy says "Batch API
-  for the full Stage 3 run", but at observed token volumes the whole run is
-  ~$3-5 sync — batch would save ~$2 and cost a work order (fetch/extract are
-  interleaved; batching means restructuring into collect-all -> submit ->
-  poll -> write-back). Assessment: not worth it at this scale; awaiting
-  Kenneth's call before running (spec-is-judge rule).
-- CLAUDE.md Stage 3 wording still says discovery is "via known paths,
-  sitemap.xml grep, then nav-link keyword match" — implementation now tries
-  known paths LAST (only when nothing else found), per Kenneth's directive.
-  CLAUDE.md not edited pending his sign-off.
+- Batch-vs-sync for the full 164 run: RESOLVED 2026-07-08, see the spec-sync
+  entry below (sync by default; CLAUDE.md updated).
+- CLAUDE.md discovery wording drift: RESOLVED 2026-07-08, see the spec-sync
+  entry below (known paths documented as last resort; CLAUDE.md updated).
 
 ## State as of 2026-07-07 (late)
 - M4 (Stage 3) implemented: llm.py (structured-output extraction + nav-link

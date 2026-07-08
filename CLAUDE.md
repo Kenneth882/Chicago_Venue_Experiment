@@ -51,9 +51,10 @@ Success metric: ≥500 tracker rows at `stage = 0_sourced`, with <5% later elimi
   middle scores go to a small Claude call, not everything).
 - **Stage 3 — menu deep-dive** (the only LLM-heavy stage, ~800–1000 survivors):
   fetch homepage (httpx, real UA, 10s timeout, per-domain rate limit, cached) → discover
-  menu/private-event pages via known paths (`/menu /menus /food /drinks /cocktails
-  /private-events /events /parties /groups /book`), sitemap.xml grep, then nav-link keyword
-  match with Claude fallback → route by content type: HTML→clean text (bs4), PDF→images
+  menu/private-event pages via sitemap.xml grep, then nav-link keyword match with Claude
+  fallback; known paths (`/menu /menus /food /drinks /cocktails /private-events /events
+  /parties /groups /book`) are a last resort, tried only when sitemap and nav links find
+  nothing → route by content type: HTML→clean text (bs4), PDF→images
   (pdf2image), images→downscale to ~1500px (Pillow), JS-shell pages→Playwright fallback
   only when HTML body is empty, no menu found→Places Photos API fallback (customers
   photograph menus) → ONE Claude extraction call per venue against the strict JSON schema
@@ -125,7 +126,11 @@ tracker.db        (gitignored)
 ## Model + cost policy
 
 - Text extraction: Haiku-class. Vision (PDF/picture menus, Maps photos) and low-confidence
-  retries: Sonnet-class. Batch API for the full Stage 3 run.
+  retries: Sonnet-class. Stage 3 runs use the synchronous Messages API by default. The
+  Batch API is only worth revisiting if the queue grows large enough that estimated sync
+  cost meaningfully exceeds batch cost (roughly an order of magnitude above current
+  volume) — adopting it means restructuring the interleaved fetch/extract flow into
+  separate collect-all → submit → poll → write-back phases.
 - Every module that calls a paid API must support `--dry-run` (log what would be called)
   and `--limit N`.
 - Never loop pagination without a hard page cap (3 pages/query). Never fetch the same URL
