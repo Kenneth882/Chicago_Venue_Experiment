@@ -1,6 +1,6 @@
 """Stage 2 cheap filter gate — Work order 4 (Milestone 3).
 
-CLI: python -m src.stage2_filter [--limit N] [--dry-run]
+CLI: python -m src.stage2_filter [--limit N] [--dry-run] [--sweep-blocked-types]
 
 Operates on all venues at stage 1_geo_ok. Checks run in this exact order,
 stopping at the first failure; each failure sets stage='eliminated' with a
@@ -8,10 +8,12 @@ reason code. (The rating/review-count gate was removed 2026-07-08: quality
 is scored by Stage 4's rating*log(review_count) weight, not gated here —
 filter on fatal, score on quality.)
 
-  1. business_status == OPERATIONAL          else not_operational
-  2. price_level null or <= 3                else price_level_high
-  3. website_uri present                     else no_website
-  4. website fetch returns HTTP 200          else two-strike policy:
+  1. type blocklist (config/blocked_types.json,
+     shared with Stage 1)                    else blocked_type
+  2. business_status == OPERATIONAL          else not_operational
+  3. price_level null or <= 3                else price_level_high
+  4. website_uri present                     else no_website
+  5. website fetch returns HTTP 200          else two-strike policy:
      httpx first (cheap path unchanged); on 403/429, timeout/transport
      failure, or 5xx the fetch escalates ONCE to the hardened Playwright
      fallback (never on robots_disallowed or plain 4xx like 404). A
@@ -21,7 +23,7 @@ filter on fatal, score on quality.)
      (bot-blocked sites recover instead of dying on one bad fetch — and
      hardened Playwright itself flakes on some bot walls, so a rendered
      failure still only counts as one strike)
-  5. identity token-overlap score:
+  6. identity token-overlap score:
      >= 0.6 pass | <= 0.2 website_identity_mismatch | middle -> needs_review
      (No Claude tiebreak in this phase.)
 
@@ -36,6 +38,7 @@ and reports how many rows would go on to the website checks.
 from __future__ import annotations
 
 import argparse
+import json
 import logging
 import re
 import sys
@@ -47,6 +50,7 @@ from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 from src import db, fetch
+from src.stage1_search import is_blocked_type
 
 logger = logging.getLogger(__name__)
 
@@ -62,12 +66,29 @@ GENERIC_TOKENS = {
 }
 
 
-# --- checks 1-3: offline, on data Stage 1 already fetched ---
+# --- checks 1-4: offline, on data Stage 1 already fetched ---
 # (No rating/review gate: rating_below_4 / too_few_reviews are no longer
 #  producible — quality lives in Stage 4's rating*log(review_count) weight.)
 
+def _venue_types(venue: Any) -> list[str]:
+    """types list from either a raw record ('types') or a DB row (types_json)."""
+    try:
+        types = venue["types"]
+    except (KeyError, IndexError):
+        types = None
+    if types is not None:
+        return types
+    try:
+        raw = venue["types_json"]
+    except (KeyError, IndexError):
+        return []
+    return json.loads(raw) if raw else []
+
+
 def offline_check(venue: Any) -> Optional[str]:
-    """Returns the elimination reason, or None if checks 1-3 all pass."""
+    """Returns the elimination reason, or None if checks 1-4 all pass."""
+    if is_blocked_type(_venue_types(venue), venue["primary_type"]):
+        return "blocked_type"
     if venue["business_status"] != "OPERATIONAL":
         return "not_operational"
     if venue["price_level"] is not None and venue["price_level"] > 3:
@@ -77,7 +98,7 @@ def offline_check(venue: Any) -> Optional[str]:
     return None
 
 
-# --- check 5: identity match (pure, unit-tested) ---
+# --- check 6: identity match (pure, unit-tested) ---
 
 def _singular(t: str) -> str:
     # naive plural fold so "cocktails" matches "cocktail"
@@ -135,7 +156,7 @@ def extract_identity_fields(html: str) -> tuple[str, str]:
     return title, og_name
 
 
-# --- check 4: website fetch with one-shot Playwright escalation ---
+# --- check 5: website fetch with one-shot Playwright escalation ---
 
 def _should_escalate(status: int) -> bool:
     """Statuses worth ONE hardened-Playwright attempt: bot challenges
@@ -146,7 +167,7 @@ def _should_escalate(status: int) -> bool:
 
 
 def check_website(url: str) -> tuple[fetch.CachedResponse, bool]:
-    """-> (response for checks 4+5, rescued_by_render). httpx first — the
+    """-> (response for checks 5+6, rescued_by_render). httpx first — the
     happy path is unchanged. A rendered response wins only when it's a 200;
     any rendered failure falls back to the httpx response for the strike."""
     resp = fetch.get(url)
@@ -159,6 +180,34 @@ def check_website(url: str) -> tuple[fetch.CachedResponse, bool]:
         return rendered, True
     logger.info("rendered fetch also failed | %s | status=%s", url, rendered.status)
     return resp, False
+
+
+# --- retroactive blocked-types sweep ---
+
+def sweep_blocked_types(conn: Any, *, dry_run: bool = False) -> Counter:
+    """Apply the type blocklist to every live row (anything not already
+    eliminated / still at 0_raw). Idempotent; re-run after any
+    config/blocked_types.json edit. Rows are eliminated with reason
+    blocked_type — never hard-deleted, so a miscategorized venue can be
+    hand-resurrected."""
+    rows = conn.execute(
+        "SELECT * FROM venues WHERE stage NOT IN ('eliminated', '0_raw') "
+        "ORDER BY place_id"
+    ).fetchall()
+    funnel: Counter = Counter()
+    funnel["swept"] = len(rows)
+    for v in rows:
+        if not is_blocked_type(_venue_types(v), v["primary_type"]):
+            continue
+        funnel["blocked_type"] += 1
+        logger.info(
+            "%s | %s | blocked_type | primary=%s%s",
+            v["place_id"], v["name"], v["primary_type"],
+            " (dry run, not written)" if dry_run else "",
+        )
+        if not dry_run:
+            db.set_stage(conn, v["place_id"], "eliminated", "blocked_type")
+    return funnel
 
 
 # --- runner ---
@@ -237,7 +286,7 @@ def run(conn: Any, *, limit: Optional[int] = None, dry_run: bool = False) -> Cou
 
 def print_funnel(funnel: Counter, dry_run: bool) -> None:
     order = [
-        "not_operational", "price_level_high", "no_website",
+        "blocked_type", "not_operational", "price_level_high", "no_website",
         "website_dead", "website_identity_mismatch",
     ]
     print(f"\nfunnel — in (1_geo_ok): {funnel['in_1_geo_ok']}"
@@ -264,13 +313,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--limit", type=int, default=None, help="max rows to process")
     parser.add_argument("--dry-run", action="store_true",
                         help="offline checks only; no network, no DB writes")
+    parser.add_argument("--sweep-blocked-types", action="store_true",
+                        help="retroactively eliminate live rows matching "
+                             "config/blocked_types.json (idempotent; no network)")
     args = parser.parse_args(argv)
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     conn = db.connect()
     db.init_db(conn)
-    funnel = run(conn, limit=args.limit, dry_run=args.dry_run)
-    print_funnel(funnel, args.dry_run)
+    if args.sweep_blocked_types:
+        funnel = sweep_blocked_types(conn, dry_run=args.dry_run)
+        print(f"\nsweep — rows examined: {funnel['swept']}, "
+              f"blocked_type{' (dry run)' if args.dry_run else ''}: "
+              f"{funnel['blocked_type']}")
+    else:
+        funnel = run(conn, limit=args.limit, dry_run=args.dry_run)
+        print_funnel(funnel, args.dry_run)
     conn.close()
     return 0
 

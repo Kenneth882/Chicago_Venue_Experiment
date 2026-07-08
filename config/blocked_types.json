@@ -1,0 +1,9 @@
+{
+  "blocked_types": ["lodging", "casino", "liquor_store"],
+  "blocked_primary_types": [
+    "night_club",
+    "cafe", "coffee_shop", "breakfast_restaurant",
+    "barber_shop", "miniature_golf_course", "movie_theater", "sports_complex",
+    "bowling_alley", "amusement_center", "karaoke"
+  ]
+}

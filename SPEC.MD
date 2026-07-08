@@ -165,6 +165,19 @@ Per cell: for each query (with `{zone}` substituted), call `search_text`. Per re
 2. Type blocklist: if `types` contains `lodging`, `casino`, or `liquor_store`, or
    `primary_type == "night_club"` with no bar/restaurant type present → `killed_type`,
    not written.
+   (Amended 2026-07-08: the blocklist now lives in hand-reviewed
+   `config/blocked_types.json` — `blocked_types` match anywhere in `types` (unchanged
+   trio above); `blocked_primary_types` match `primary_type` ONLY and unconditionally:
+   nightclubs (the bar/restaurant-hybrid exemption is gone), coffee/breakfast spots
+   (cafe, coffee_shop, breakfast_restaurant), and activity venues (barber_shop,
+   miniature_golf_course, movie_theater, sports_complex, bowling_alley,
+   amusement_center, karaoke). Rationale: corporate-networking fit — these categories
+   sell the wrong event model. Primary-only matching is deliberate: good venues carry
+   brunch_restaurant/cafe as secondary tags. Stage 2 mirrors the check as its first
+   (cheapest) offline gate with reason code `blocked_type`, and
+   `python -m src.stage2_filter --sweep-blocked-types` retroactively eliminates live
+   rows after any config edit — idempotent, never hard-deletes, so misclassified
+   venues (e.g. Celeste, Blind Barber) can be hand-resurrected.)
 3. Normalize to the venues schema; `found_by` entry = {cell_id, query, rank, run_id}.
 4. `upsert_venue`; count new vs dupe.
 
@@ -202,12 +215,15 @@ rows previously killed by the gate were resurrected to `1_geo_ok` and
 re-filtered through the remaining checks. This also moots the old
 CLAUDE.md-25-vs-SPEC-50 review-floor discrepancy.)
 
-1. `business_status == "OPERATIONAL"` → else `not_operational`
-2. `price_level is null OR price_level <= 3` → else `price_level_high`
-3. `website_uri` present → else `no_website`
-4. HTTP check (httpx, follow redirects, 10s timeout, browser-like header set,
+1. Type blocklist (`config/blocked_types.json`, same rule as Stage 1 — added here
+   2026-07-08 as the cheapest gate so config edits catch already-ingested rows)
+   → else `blocked_type`
+2. `business_status == "OPERATIONAL"` → else `not_operational`
+3. `price_level is null OR price_level <= 3` → else `price_level_high`
+4. `website_uri` present → else `no_website`
+5. HTTP check (httpx, follow redirects, 10s timeout, browser-like header set,
    one retry after 3s on 403/429/timeout, via cached fetch layer in
-   `src/fetch.py`): status 200 → pass on to check 5. Otherwise two-strike:
+   `src/fetch.py`): status 200 → pass on to check 6. Otherwise two-strike:
    the first failing run sets `stage='needs_review'` with marker
    `website_dead_once` (re-checked automatically on the next run); a second
    consecutive failing run sets `eliminated` / `website_dead`. Bot-challenge
@@ -221,14 +237,14 @@ CLAUDE.md-25-vs-SPEC-50 review-floor discrepancy.)
    to the hardened Playwright fetch built in M4 (`fetch.get_rendered`) — but
    only for bot-wall/transient statuses: 403/429, timeout/transport failure,
    5xx. Never for robots_disallowed and never for plain 4xx like 404, which
-   are genuinely dead. A rendered 200 passes on to check 5 using the rendered
+   are genuinely dead. A rendered 200 passes on to check 6 using the rendered
    HTML and final URL; a rendered failure falls into the two-strike policy
    above. The two-strike policy stays even though a strike now means both
    paths failed — hardened Playwright itself flakes on some bot walls (see
    NOTES.md: order.toasttab.com rendered for one venue and 403'd for another
    the same day). This drains the 12-venue JA3 retry queue from the
    2026-07-07 incident.)
-5. Identity match: compare venue name against final redirect domain, `<title>`, and
+6. Identity match: compare venue name against final redirect domain, `<title>`, and
    `og:site_name` using a normalized token-overlap score.
    Score ≥ 0.6 → pass. Score ≤ 0.2 → `website_identity_mismatch`.
    Middle band (0.2–0.6) → set `stage='needs_review'` for now. Do NOT call Claude in this

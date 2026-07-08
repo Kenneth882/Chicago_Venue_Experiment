@@ -41,9 +41,12 @@ Success metric: ≥500 tracker rows at `stage = 0_sourced`, with <5% later elimi
   places.businessStatus, places.websiteUri, places.types, places.primaryType`.
   Paginate via `nextPageToken` up to 60 results per query. If a query hits the 60 cap, split
   the cell into 4 half-radius sub-circles and re-run (one recursion level max). Per result:
-  point-in-polygon check (shapely), type blocklist (`lodging`, `casino`, `liquor_store`,
-  pure `night_club`), normalize, upsert. Emit per-cell stats: raw_results, killed_geo,
-  killed_type, new_rows, dupes, hit_60_cap.
+  point-in-polygon check (shapely), type blocklist from hand-reviewed
+  `config/blocked_types.json` (`lodging`/`casino`/`liquor_store` anywhere in types, plus
+  corporate-fit categories blocked on primary_type only: nightclubs, coffee/breakfast
+  spots, activity venues — made config-driven 2026-07-08, see SPEC.md WO3; primary-only
+  because secondary tags are noisy), normalize, upsert. Emit per-cell stats: raw_results,
+  killed_geo, killed_type, new_rows, dupes, hit_60_cap.
 - **Stage 2 — cheap filter gate**, ordered cheapest-first, on data already fetched:
   `business_status == OPERATIONAL` → `price_level <= 3` → website returns 200 after
   redirects → website identity match (final redirect domain + <title> + og:site_name
@@ -109,7 +112,7 @@ queue, not pass/fail.
 ## Repo layout
 
 ```
-config/           zones.json, venue_types.json, queries frozen per cell
+config/           zones.json, venue_types.json, blocked_types.json, queries frozen per cell
 src/db.py         all DB access (only module that touches sqlite)
 src/stage1_search.py
 src/stage2_filter.py

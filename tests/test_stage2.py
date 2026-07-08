@@ -22,12 +22,35 @@ def record(**overrides):
         "user_rating_count": 500,
         "price_level": 2,
         "website_uri": "https://example-venue.com",
+        "types": ["bar"],
+        "primary_type": "bar",
     }
     base.update(overrides)
     return base
 
 
-# --- hand-built records, offline checks 1-3, right reason codes ---
+# --- hand-built records, offline checks 1-4, right reason codes ---
+
+def test_blocked_type_primary_category():
+    assert offline_check(record(primary_type="night_club",
+                                types=["night_club", "bar"])) == "blocked_type"
+    assert offline_check(record(primary_type="cafe", types=["cafe"])) == "blocked_type"
+    assert offline_check(record(types=["bar", "lodging"])) == "blocked_type"
+
+
+def test_blocked_type_reads_types_json_from_db_rows():
+    r = record()
+    del r["types"]
+    r["types_json"] = '["bar", "lodging"]'
+    assert offline_check(r) == "blocked_type"
+    r["types_json"] = '["bar"]'
+    assert offline_check(r) is None
+
+
+def test_secondary_tags_do_not_block():
+    assert offline_check(record(primary_type="american_restaurant",
+                                types=["restaurant", "brunch_restaurant"])) is None
+
 
 def test_not_operational():
     assert offline_check(record(business_status="CLOSED_PERMANENTLY")) == "not_operational"
@@ -48,11 +71,14 @@ def test_all_offline_checks_pass():
 # --- ordering and edge cases ---
 
 def test_first_failure_wins():
-    # fails everything — must report check 1's reason
-    r = record(business_status="CLOSED_TEMPORARILY", rating=3.0,
+    # fails everything — must report check 1's reason (blocked_type first)
+    r = record(primary_type="night_club", types=["night_club"],
+               business_status="CLOSED_TEMPORARILY", rating=3.0,
                user_rating_count=5, price_level=4, website_uri=None)
+    assert offline_check(r) == "blocked_type"
+    # fails 2..4 — operational before price before website
+    r = record(business_status="CLOSED_TEMPORARILY", price_level=4, website_uri=None)
     assert offline_check(r) == "not_operational"
-    # fails 2 and 3 — must report price before website
     assert offline_check(record(price_level=4, website_uri=None)) == "price_level_high"
 
 
@@ -275,6 +301,50 @@ def test_dry_run_does_not_touch_retry_queue(conn, monkeypatch):
     assert funnel["in_website_retry_queue"] == 1
     assert funnel["website_dead"] == 0
     assert db.get_venue(conn, "ChIJtwostrike")["stage"] == "needs_review"
+
+
+# --- retroactive blocked-types sweep (no network) ---
+
+def _seed(conn, place_id, name, primary_type, types, stage):
+    db.upsert_venue(conn, {
+        "place_id": place_id, "name": name,
+        "rating": 4.2, "user_rating_count": 300, "price_level": 2,
+        "business_status": "OPERATIONAL", "website_uri": f"https://{place_id}.test",
+        "types": types, "primary_type": primary_type,
+        "found_by": {"cell_id": "c", "query": "q", "rank": 1, "run_id": "r"},
+    })
+    db.set_stage(conn, place_id, stage)
+
+
+def test_sweep_blocked_types(conn):
+    _seed(conn, "ChIJclub", "Bass Cavern", "night_club", ["night_club", "bar"],
+          "3_enriched")
+    _seed(conn, "ChIJcafe", "Bean There", "coffee_shop", ["coffee_shop", "cafe"],
+          "needs_review")
+    _seed(conn, "ChIJgood", "The Publican-alike", "american_restaurant",
+          ["restaurant", "brunch_restaurant"], "2_filtered_ok")
+    _seed(conn, "ChIJdead", "Already Dead Club", "night_club", ["night_club"],
+          "2_filtered_ok")
+    db.set_stage(conn, "ChIJdead", "eliminated", "website_dead")
+
+    # dry run: reports, writes nothing
+    funnel = stage2_filter.sweep_blocked_types(conn, dry_run=True)
+    assert funnel["blocked_type"] == 2
+    assert db.get_venue(conn, "ChIJclub")["stage"] == "3_enriched"
+
+    # live: blocked rows eliminated with reason; clean + already-dead untouched
+    funnel = stage2_filter.sweep_blocked_types(conn)
+    assert funnel["blocked_type"] == 2
+    for pid in ("ChIJclub", "ChIJcafe"):
+        row = db.get_venue(conn, pid)
+        assert row["stage"] == "eliminated"
+        assert row["eliminated_reason"] == "blocked_type"
+    assert db.get_venue(conn, "ChIJgood")["stage"] == "2_filtered_ok"
+    assert db.get_venue(conn, "ChIJdead")["eliminated_reason"] == "website_dead"
+
+    # idempotent: second run finds nothing new
+    funnel = stage2_filter.sweep_blocked_types(conn)
+    assert funnel["blocked_type"] == 0
 
 
 # --- html field extraction ---

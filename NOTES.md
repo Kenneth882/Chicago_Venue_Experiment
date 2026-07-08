@@ -217,6 +217,34 @@ rather than duplicating.
 - 14 LLM calls for 10 venues (4 Sonnet retries); ~7K input tokens/venue on
   Haiku, ~4-12K on Sonnet retries. Cheap: full 164-venue run est. $3-5 sync.
 
+## Type blocklist made config-driven + corporate-fit categories (2026-07-08)
+- Blocklist moved from a hardcoded set in stage1_search.py to hand-reviewed
+  config/blocked_types.json. Two lists: blocked_types (lodging/casino/
+  liquor_store — match anywhere in types, unchanged) and
+  blocked_primary_types (match primary_type ONLY, unconditional):
+  night_club (hybrid exemption removed), cafe/coffee_shop/
+  breakfast_restaurant, and activity venues (barber_shop,
+  miniature_golf_course, movie_theater, sports_complex, bowling_alley,
+  amusement_center, karaoke). Kenneth's call for corporate-networking fit:
+  these sell per-person activity/daytime models, not the F&B-minimum/buyout
+  model the pipeline extracts and scores.
+- **Primary-only matching is load-bearing**: secondary tags are noisy —
+  The Publican, avec, Beatrix, Gene & Georgetti all carry brunch_restaurant/
+  cafe/breakfast_restaurant side tags and must survive (regression-tested).
+- Stage 2 mirrors the check as its first offline gate (reason blocked_type)
+  and `python -m src.stage2_filter --sweep-blocked-types [--dry-run]`
+  retroactively eliminates live rows — idempotent, re-run after any config
+  edit. Live sweep 2026-07-08: 15/229 eliminated (8 nightclubs incl.
+  Sound Bar + Spybar which were already 3_enriched, Starbucks Reserve,
+  Nimble, Chicago Waffles, Puttery, Rooftop Cinema Club, City Pool Hall,
+  Blind Barber). Known collateral, hand-resurrectable if wanted: Celeste
+  (misclassified cocktail lounge) and Blind Barber (cocktail lounge behind
+  a barbershop front). Kept by decision: live_music_venue (City Winery,
+  Bottom Lounge). Stage 3 queue 175 -> 166. Elements Nightlife's
+  website_dead_once retry entry is moot (swept as blocked_type).
+- SPEC WO3 step 2 + WO4 check list amended (blocked_type is now WO4 check
+  1; HTTP=5, identity=6); CLAUDE.md Stage 1 bullet + repo layout updated.
+
 ## Stage 2 rating gate removed (2026-07-08, approved)
 - Check 2 (rating >= 4.0 AND user_rating_count >= 50) deleted from Stage 2;
   rating_below_4 / too_few_reviews are no longer producible. Rationale:
@@ -325,11 +353,12 @@ rather than duplicating.
 - Menu-provider follow + discovery cleanup + Sonnet low-conf retry + cfemail
   decode all implemented and live-verified on the 10-venue smoke (see the
   2026-07-08 sections above). pytest = 99 passed, golden set now 12 cases.
-- Tracker after the 2026-07-08 drain + gate removal: 200 at 2_filtered_ok
-  (Stage 3 queue), 8 at 3_enriched, 30 eliminated (10 no_website, 9
-  website_identity_mismatch, 9 price_level_high, 2 website_dead), 21
-  needs_review (15 identity band, 5 extraction_low_confidence, 1
-  website_dead_once = Elements Nightlife).
+- Tracker after the 2026-07-08 drain + gate removal + 25-venue Stage 3 run
+  + blocked-types sweep: 166 at 2_filtered_ok (Stage 3 queue), 24 at
+  3_enriched, 45 eliminated (15 blocked_type, 10 no_website, 9
+  website_identity_mismatch, 9 price_level_high, 2 website_dead), 24
+  needs_review (14 identity band, 8 extraction_low_confidence, 2
+  menu_identity_mismatch). website_dead_once queue: empty.
 - Batch-vs-sync for the full 164 run: RESOLVED 2026-07-08, see the spec-sync
   entry below (sync by default; CLAUDE.md updated).
 - CLAUDE.md discovery wording drift: RESOLVED 2026-07-08, see the spec-sync

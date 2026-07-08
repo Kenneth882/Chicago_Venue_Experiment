@@ -4,6 +4,7 @@ import json
 import math
 from pathlib import Path
 
+from src import stage1_search
 from src.stage1_search import (
     PRICE_LEVEL_MAP,
     in_zone,
@@ -51,16 +52,40 @@ def test_blocklist_kills_lodging_casino_liquor_store():
     assert is_blocked_type(["liquor_store", "store"], "liquor_store")
 
 
-def test_blocklist_pure_night_club_killed_but_hybrid_survives():
+def test_blocklist_primary_night_club_always_killed():
+    # 2026-07-08: unconditional — the old bar/restaurant-hybrid exemption is gone
     assert is_blocked_type(["night_club", "point_of_interest"], "night_club")
-    assert not is_blocked_type(["night_club", "bar"], "night_club")
-    assert not is_blocked_type(["night_club", "restaurant"], "night_club")
+    assert is_blocked_type(["night_club", "bar"], "night_club")
+    assert is_blocked_type(["night_club", "restaurant"], "night_club")
+
+
+def test_blocklist_corporate_fit_primaries_killed():
+    for primary in ("cafe", "coffee_shop", "breakfast_restaurant",
+                    "barber_shop", "miniature_golf_course", "movie_theater",
+                    "sports_complex", "bowling_alley", "amusement_center", "karaoke"):
+        assert is_blocked_type([primary, "establishment"], primary), primary
+
+
+def test_blocklist_secondary_tags_never_kill():
+    # The Publican pattern: great venues carry brunch/cafe as SECONDARY tags
+    assert not is_blocked_type(["restaurant", "brunch_restaurant"], "american_restaurant")
+    assert not is_blocked_type(["bar", "cafe", "coffee_shop"], "wine_bar")
+    assert not is_blocked_type(["restaurant", "breakfast_restaurant"], "steak_house")
+    assert not is_blocked_type(["bar", "night_club"], "bar")
 
 
 def test_blocklist_passes_normal_venues():
     assert not is_blocked_type(["bar", "point_of_interest"], "bar")
     assert not is_blocked_type(["restaurant"], "restaurant")
     assert not is_blocked_type([], None)
+
+
+def test_blocklist_is_config_driven():
+    cfg = json.loads(
+        (stage1_search.CONFIG_DIR / "blocked_types.json").read_text()
+    )
+    assert stage1_search.BLOCKED_TYPES == set(cfg["blocked_types"])
+    assert stage1_search.BLOCKED_PRIMARY_TYPES == set(cfg["blocked_primary_types"])
 
 
 # --- normalization against the real captured fixture ---

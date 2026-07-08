@@ -34,7 +34,17 @@ logger = logging.getLogger(__name__)
 
 CONFIG_DIR = Path(__file__).resolve().parent.parent / "config"
 
-BLOCKED_TYPES = {"lodging", "casino", "liquor_store"}
+
+def load_blocked_types() -> tuple[set[str], set[str]]:
+    """(blocked anywhere in types, blocked as primary_type only) from the
+    hand-reviewed config. Primary-only matching for the category list is
+    deliberate: secondary tags are too noisy (good venues carry
+    brunch_restaurant/cafe as side tags)."""
+    cfg = json.loads((CONFIG_DIR / "blocked_types.json").read_text())
+    return set(cfg["blocked_types"]), set(cfg["blocked_primary_types"])
+
+
+BLOCKED_TYPES, BLOCKED_PRIMARY_TYPES = load_blocked_types()
 
 # Places API (New) returns priceLevel as an enum string.
 PRICE_LEVEL_MAP = {
@@ -61,12 +71,13 @@ def in_zone(lat: float, lng: float, center: dict[str, float], radius_m: float) -
 
 
 def is_blocked_type(types: Optional[list[str]], primary_type: Optional[str]) -> bool:
-    ts = set(types or [])
-    if ts & BLOCKED_TYPES:
+    """Deterministic corporate-fit blocklist (config/blocked_types.json).
+    blocked_types match anywhere in `types`; blocked_primary_types match
+    primary_type only and unconditionally (subsumes the old "pure
+    night_club" rule — nightclubs are blocked outright since 2026-07-08)."""
+    if set(types or []) & BLOCKED_TYPES:
         return True
-    if primary_type == "night_club" and not (ts & {"bar", "restaurant"}):
-        return True
-    return False
+    return primary_type in BLOCKED_PRIMARY_TYPES
 
 
 def normalize_place(place: dict[str, Any], zone_id: str) -> dict[str, Any]:
