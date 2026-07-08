@@ -95,10 +95,15 @@ rather than duplicating.
   parks the row at needs_review with marker `website_dead_once` (auto
   re-checked next run), only a second consecutive failing run eliminates.
   SPEC.md WO4 amended to match.
-- **Known limitation:** until Playwright (M4), the JA3-blocked sites will
-  fail every httpx run — do NOT run stage2 twice in a row expecting them to
-  clear, or the second run will (falsely) eliminate them. The 12 are parked
-  in the retry queue until M4.
+- **RESOLVED 2026-07-08:** Stage 2 check 5 now escalates a failed httpx
+  fetch ONCE to fetch.get_rendered (hardened Playwright) before striking —
+  only on 403/429/timeout/5xx, never robots_disallowed or plain 4xx. The
+  old "don't run stage2 twice in a row" caution no longer applies: strike
+  two only lands after a rendered attempt also fails. Two-strike policy
+  kept because hardened Playwright itself flakes (order.toasttab.com
+  rendered for Theory, 403'd for Parlay the same day). SPEC WO4 amended
+  2026-07-08; see "Stage 2 Playwright escalation" below for the drain
+  results.
 - Mercadito preview of identity-check pitfalls: mercaditorivernorth.com
   301s cross-domain to mercaditorestaurantgroup.com (parent group site).
   This one still passes (squashed domain contains "mercadito"), but venue
@@ -211,6 +216,36 @@ rather than duplicating.
 - 14 LLM calls for 10 venues (4 Sonnet retries); ~7K input tokens/venue on
   Haiku, ~4-12K on Sonnet retries. Cheap: full 164-venue run est. $3-5 sync.
 
+## Stage 2 Playwright escalation + retry-queue drain (2026-07-08)
+- Check 5 now: httpx -> on 403/429/timeout/5xx escalate ONCE to
+  fetch.get_rendered -> rendered 200 feeds check 6 (identity reads the
+  RENDERED html + final URL) -> rendered failure falls into the unchanged
+  two-strike policy. No escalation on robots_disallowed (-1) or plain 4xx
+  (404/410 are genuinely dead, not bot-walled). Happy path untouched.
+  Promotion clears the website_dead_once marker (set_stage writes reason
+  NULL on non-eliminated transitions — already true, now test-covered).
+- Drain results (queue of 12): 9 -> 2_filtered_ok (Mercadito, L Station,
+  Bassment, Bar Goa, Franklin Room, AMBAR, Federales Fulton, Tree House,
+  676/Omni). 1 rescued but identity band: Moe's Cantina (score 0.50 —
+  "River North" suffix tokens absent from title; marker cleared, now in the
+  identity needs_review pool). 2 eliminated website_dead: Bodega Bar
+  (genuine 404, correctly NOT escalated, strike 2 — expected) and Viaggio
+  (see below — flagged to Kenneth as a probable false kill).
+- **Cloudflare has tiers.** The plain JS challenge self-resolves in the
+  hardened headless browser (franklinroom.com et al. — 10 of 10 rescued).
+  The INTERACTIVE/managed challenge (`cf-mitigated: challenge` response
+  header, Turnstile widget) does NOT self-resolve headlessly and also 403s
+  curl-with-browser-headers now: viaggiochicago.com serves it to httpx,
+  hardened Playwright, AND curl (verified 2026-07-08; curl got 200 on these
+  sites on 07-07, so the site tightened its setting or is under attack
+  mode). No amount of settle-loop waiting fixes a challenge that requires
+  a click. If more of these appear in the full run, options are manual
+  verification or a needs_review park keyed on `cf-mitigated: challenge`;
+  decided nothing yet.
+- 676 Restaurant & Bar (Omni hotel) is now at 2_filtered_ok — reminder
+  that the hotel_domains.json proposal (below) is still unimplemented; it
+  would have parked this row for human review.
+
 ## Hotel-restaurant blocklist gap (proposal only, NOT implemented)
 - 676 Restaurant & Bar is the Omni Chicago Hotel's restaurant, but its
   Places types are purely restaurant/bar (`american_restaurant,
@@ -260,10 +295,10 @@ rather than duplicating.
 - Menu-provider follow + discovery cleanup + Sonnet low-conf retry + cfemail
   decode all implemented and live-verified on the 10-venue smoke (see the
   2026-07-08 sections above). pytest = 99 passed, golden set now 12 cases.
-- Tracker: 164 at 2_filtered_ok (Stage 3 queue), 8 at 3_enriched, 58
-  eliminated, 29 needs_review (12 website_dead_once retry queue, 12 Stage 2
-  identity band, 5 extraction_low_confidence incl. The Dearborn from the
-  first 3-venue smoke).
+- Tracker after the 2026-07-08 retry-queue drain: 173 at 2_filtered_ok
+  (Stage 3 queue), 8 at 3_enriched, 60 eliminated, 18 needs_review (13
+  Stage 2 identity band incl. Moe's Cantina, 5 extraction_low_confidence
+  incl. The Dearborn). website_dead_once queue: empty.
 - Batch-vs-sync for the full 164 run: RESOLVED 2026-07-08, see the spec-sync
   entry below (sync by default; CLAUDE.md updated).
 - CLAUDE.md discovery wording drift: RESOLVED 2026-07-08, see the spec-sync

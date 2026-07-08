@@ -12,9 +12,15 @@ reason code:
   3. price_level null or <= 3                else price_level_high
   4. website_uri present                     else no_website
   5. website fetch returns HTTP 200          else two-strike policy:
+     httpx first (cheap path unchanged); on 403/429, timeout/transport
+     failure, or 5xx the fetch escalates ONCE to the hardened Playwright
+     fallback (never on robots_disallowed or plain 4xx like 404). A
+     rendered 200 passes on to check 6 with the rendered HTML. Otherwise:
      first failing run  -> needs_review + marker 'website_dead_once'
      second consecutive failing run -> eliminated / website_dead
-     (bot-blocked sites recover instead of dying on one bad fetch)
+     (bot-blocked sites recover instead of dying on one bad fetch — and
+     hardened Playwright itself flakes on some bot walls, so a rendered
+     failure still only counts as one strike)
   6. identity token-overlap score:
      >= 0.6 pass | <= 0.2 website_identity_mismatch | middle -> needs_review
      (No Claude tiebreak in this phase.)
@@ -131,6 +137,32 @@ def extract_identity_fields(html: str) -> tuple[str, str]:
     return title, og_name
 
 
+# --- check 5: website fetch with one-shot Playwright escalation ---
+
+def _should_escalate(status: int) -> bool:
+    """Statuses worth ONE hardened-Playwright attempt: bot challenges
+    (403/429), timeout/transport failures (0), and 5xx. Never
+    robots_disallowed (-1) — rendering is equally disallowed — and never
+    plain 4xx like 404: genuinely dead, not bot-walled."""
+    return status in (403, 429) or status == 0 or 500 <= status <= 599
+
+
+def check_website(url: str) -> tuple[fetch.CachedResponse, bool]:
+    """-> (response for checks 5+6, rescued_by_render). httpx first — the
+    happy path is unchanged. A rendered response wins only when it's a 200;
+    any rendered failure falls back to the httpx response for the strike."""
+    resp = fetch.get(url)
+    if resp.status == 200 or not _should_escalate(resp.status):
+        return resp, False
+    logger.info("escalating to rendered fetch | %s | httpx status=%s%s",
+                url, resp.status, f", {resp.error}" if resp.error else "")
+    rendered = fetch.get_rendered(url)
+    if rendered.status == 200:
+        return rendered, True
+    logger.info("rendered fetch also failed | %s | status=%s", url, rendered.status)
+    return resp, False
+
+
 # --- runner ---
 
 def run(conn: Any, *, limit: Optional[int] = None, dry_run: bool = False) -> Counter:
@@ -158,7 +190,9 @@ def run(conn: Any, *, limit: Optional[int] = None, dry_run: bool = False) -> Cou
             funnel["would_check_website"] += 1
             continue
 
-        resp = fetch.get(v["website_uri"])
+        resp, rescued = check_website(v["website_uri"])
+        if rescued:
+            funnel["website_rescued_by_render"] += 1
         if resp.status != 200:
             if v["eliminated_reason"] == "website_dead_once":
                 # second consecutive failed run — now it's a kill
@@ -215,6 +249,9 @@ def print_funnel(funnel: Counter, dry_run: bool) -> None:
     for reason in order:
         if funnel[reason]:
             print(f"  eliminated {reason:<28} {funnel[reason]:>5}")
+    if funnel["website_rescued_by_render"]:
+        print(f"  {'rescued by rendered fetch':<39} "
+              f"{funnel['website_rescued_by_render']:>5}")
     if funnel["website_dead_first_strike"]:
         print(f"  {'website_dead_once -> needs_review':<39} "
               f"{funnel['website_dead_first_strike']:>5}")

@@ -208,6 +208,17 @@ Checks in this exact order, stopping at first failure; each failure sets
    regardless of headers; curl with identical headers gets 200. A real-browser
    fetch for these lands with Playwright in M4; until then blocked sites park
    in needs_review instead of dying.)
+   (Amended 2026-07-08: before striking, a failed httpx fetch escalates ONCE
+   to the hardened Playwright fetch built in M4 (`fetch.get_rendered`) — but
+   only for bot-wall/transient statuses: 403/429, timeout/transport failure,
+   5xx. Never for robots_disallowed and never for plain 4xx like 404, which
+   are genuinely dead. A rendered 200 passes on to check 6 using the rendered
+   HTML and final URL; a rendered failure falls into the two-strike policy
+   above. The two-strike policy stays even though a strike now means both
+   paths failed — hardened Playwright itself flakes on some bot walls (see
+   NOTES.md: order.toasttab.com rendered for one venue and 403'd for another
+   the same day). This drains the 12-venue JA3 retry queue from the
+   2026-07-07 incident.)
 6. Identity match: compare venue name against final redirect domain, `<title>`, and
    `og:site_name` using a normalized token-overlap score.
    Score ≥ 0.6 → pass. Score ≤ 0.2 → `website_identity_mismatch`.

@@ -132,7 +132,8 @@ def test_verdict_thresholds_exact():
     assert identity_verdict(0.59) == "review"
 
 
-# --- website_dead two-strike policy (fetch monkeypatched, no network) ---
+# --- website_dead two-strike policy + Playwright escalation
+#     (fetch monkeypatched, no network) ---
 
 @pytest.fixture
 def conn(tmp_path):
@@ -156,25 +157,108 @@ def _resp(status, url="https://theviolethour.com", text=""):
     return CachedResponse(url=url, status=status, final_url=url, headers={}, text=text)
 
 
-def test_website_dead_two_strike(conn, monkeypatch):
-    monkeypatch.setattr(stage2_filter.fetch, "get", lambda url, timeout=10.0: _resp(403))
-    # strike 1: needs_review with marker, not eliminated
+def _patch_fetch(monkeypatch, get_status, rendered_status=None, rendered_text=""):
+    """Patch httpx and Playwright paths. rendered_status=None asserts the
+    escalation is never attempted."""
+    rendered_calls = []
+    monkeypatch.setattr(stage2_filter.fetch, "get",
+                        lambda url, timeout=10.0: _resp(get_status))
+    def get_rendered(url, timeout=30.0):
+        rendered_calls.append(url)
+        assert rendered_status is not None, "escalated when it must not"
+        return _resp(rendered_status, text=rendered_text)
+    monkeypatch.setattr(stage2_filter.fetch, "get_rendered", get_rendered)
+    return rendered_calls
+
+
+def test_website_dead_two_strike_only_after_rendered_also_fails(conn, monkeypatch):
+    rendered_calls = _patch_fetch(monkeypatch, 403, rendered_status=403)
+    # strike 1: httpx 403 AND rendered 403 -> needs_review with marker
     funnel = stage2_filter.run(conn)
     assert funnel["website_dead_first_strike"] == 1
+    assert rendered_calls, "403 must escalate to the rendered fetch"
     row = db.get_venue(conn, "ChIJtwostrike")
     assert row["stage"] == "needs_review"
     assert row["eliminated_reason"] == "website_dead_once"
-    # strike 2: retry queue is re-checked, still failing -> eliminated
+    # strike 2: retry queue re-checked, both paths still failing -> eliminated
     funnel = stage2_filter.run(conn)
     assert funnel["in_website_retry_queue"] == 1
     assert funnel["website_dead"] == 1
+    assert len(rendered_calls) == 2
     row = db.get_venue(conn, "ChIJtwostrike")
     assert row["stage"] == "eliminated"
     assert row["eliminated_reason"] == "website_dead"
 
 
+def test_rendered_200_rescues_and_feeds_identity(conn, monkeypatch):
+    # httpx 403, rendered 200 with matching title -> no strike, straight pass
+    _patch_fetch(monkeypatch, 403, rendered_status=200,
+                 rendered_text="<title>The Violet Hour</title>")
+    funnel = stage2_filter.run(conn)
+    assert funnel["website_rescued_by_render"] == 1
+    assert funnel["website_dead_first_strike"] == 0
+    assert funnel["passed"] == 1
+    row = db.get_venue(conn, "ChIJtwostrike")
+    assert row["stage"] == "2_filtered_ok"
+    assert row["eliminated_reason"] is None
+
+
+def test_rendered_200_wrong_identity_still_reaches_check_6(conn, monkeypatch):
+    # escalation rescues liveness but identity still judges the rendered
+    # html + final url (here: parked on an unrelated domain)
+    monkeypatch.setattr(stage2_filter.fetch, "get",
+                        lambda url, timeout=10.0: _resp(403))
+    monkeypatch.setattr(
+        stage2_filter.fetch, "get_rendered",
+        lambda url, timeout=30.0: _resp(200, url="https://parked-domains.example/",
+                                        text="<title>Coming Soon</title>"),
+    )
+    funnel = stage2_filter.run(conn)
+    assert funnel["website_rescued_by_render"] == 1
+    assert db.get_venue(conn, "ChIJtwostrike")["eliminated_reason"] \
+        == "website_identity_mismatch"
+
+
+def test_rescue_from_retry_queue_clears_marker(conn, monkeypatch):
+    # strike one first (both paths fail) ...
+    _patch_fetch(monkeypatch, 403, rendered_status=403)
+    stage2_filter.run(conn)
+    assert db.get_venue(conn, "ChIJtwostrike")["eliminated_reason"] == "website_dead_once"
+    # ... next run the rendered fetch gets through -> promoted, marker cleared
+    _patch_fetch(monkeypatch, 403, rendered_status=200,
+                 rendered_text="<title>The Violet Hour</title>")
+    funnel = stage2_filter.run(conn)
+    assert funnel["passed"] == 1
+    row = db.get_venue(conn, "ChIJtwostrike")
+    assert row["stage"] == "2_filtered_ok"
+    assert row["eliminated_reason"] is None
+
+
+def test_robots_disallowed_not_escalated(conn, monkeypatch):
+    _patch_fetch(monkeypatch, -1, rendered_status=None)  # rendered call = failure
+    funnel = stage2_filter.run(conn)
+    assert funnel["website_dead_first_strike"] == 1
+    assert db.get_venue(conn, "ChIJtwostrike")["eliminated_reason"] == "website_dead_once"
+
+
+def test_plain_404_not_escalated(conn, monkeypatch):
+    _patch_fetch(monkeypatch, 404, rendered_status=None)
+    funnel = stage2_filter.run(conn)
+    assert funnel["website_dead_first_strike"] == 1
+
+
+def test_timeout_and_5xx_do_escalate():
+    assert stage2_filter._should_escalate(0)      # timeout / transport
+    assert stage2_filter._should_escalate(403)
+    assert stage2_filter._should_escalate(429)
+    assert stage2_filter._should_escalate(503)
+    assert not stage2_filter._should_escalate(-1)  # robots_disallowed
+    assert not stage2_filter._should_escalate(404)
+    assert not stage2_filter._should_escalate(410)
+
+
 def test_website_recovers_after_first_strike(conn, monkeypatch):
-    monkeypatch.setattr(stage2_filter.fetch, "get", lambda url, timeout=10.0: _resp(403))
+    _patch_fetch(monkeypatch, 403, rendered_status=403)
     stage2_filter.run(conn)
     assert db.get_venue(conn, "ChIJtwostrike")["stage"] == "needs_review"
     # site comes back with a matching title -> full pass, marker cleared
@@ -190,7 +274,7 @@ def test_website_recovers_after_first_strike(conn, monkeypatch):
 
 
 def test_dry_run_does_not_touch_retry_queue(conn, monkeypatch):
-    monkeypatch.setattr(stage2_filter.fetch, "get", lambda url, timeout=10.0: _resp(403))
+    _patch_fetch(monkeypatch, 403, rendered_status=403)
     stage2_filter.run(conn)
     funnel = stage2_filter.run(conn, dry_run=True)
     assert funnel["in_website_retry_queue"] == 1
